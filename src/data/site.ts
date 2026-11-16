@@ -30,7 +30,7 @@ export const site = {
 export const booking = {
   id: 'fitting',
   title: 'Fitting at the studio',
-  length: '60 min',
+  length: '30 min',
   where: 'Nørrebro studio',
   calLink: '',
   steps: [
@@ -45,12 +45,13 @@ export const booking = {
 export const bookingTest = {
   // Google Apps Script web app URL (ends in /exec). Empty = the test still works but records nothing.
   sheetUrl: '',
-  team: 'Group 6',
   school: 'EK',
   // An email people can write to about their data. TODO: fill in before sharing the link.
   contact: '',
   times: ['10:00', '12:00', '14:00', '16:00'],
   matters: ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'],
   budget: ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'],
+  // Shown if someone closes the booking before confirming.
+  exitReasons: ['Just looking around', 'The deposit', 'Not the right time', "I'd rather just drop by", 'Something else'],
   stoppedBy: ['The deposit', 'Too early for me', "I'd rather just drop by", 'Paying before we meet', 'Something else'],
 };

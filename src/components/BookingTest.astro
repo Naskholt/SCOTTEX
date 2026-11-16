@@ -30,7 +30,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
           <p class="label text-ash">01 — Time</p>
           <h2 id="bt-title" class="display mt-6 text-[clamp(34px,5vw,72px)]">Find a time</h2>
           <p class="mt-6 max-w-[30ch] font-serif text-[clamp(20px,1.8vw,24px)] italic leading-snug text-bone/85">
-            A fitting in my studio takes about an hour. Pick what suits you.
+            A fitting in my studio takes about half an hour. Pick what suits you.
           </p>
         </div>
         <div class="md:col-span-6 md:col-start-7">
@@ -127,12 +127,12 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
       <!-- Reveal (after "Pay") -->
       <section hidden class="bt-step grid gap-10 md:grid-cols-12 md:gap-6" data-bt-step="reveal">
         <div class="md:col-span-6">
-          <p class="label text-ash">A note from {T.team}, {T.school}</p>
+          <p class="label text-ash">A note from students at {T.school}</p>
           <h2 class="mt-6 font-serif text-[clamp(34px,4.6vw,64px)] italic leading-[1.02]">Thank you. Nothing was booked, and nothing was paid.</h2>
         </div>
         <div class="md:col-span-5 md:col-start-8">
           <p class="text-bone/85">
-            This booking page is a test by {T.team}, a student team at {T.school}, made together with Scottex.
+            This booking page is a test by students from {T.school}, made together with Scottex.
             We want to find out if people would book a fitting with a deposit. Your click tells us you would.
           </p>
           <p class="label mt-10 text-ash">Can we keep your answer?</p>
@@ -148,7 +148,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
           <details class="bt-privacy mt-8">
             <summary class="label cursor-pointer text-ash hover:text-white">How we handle your data</summary>
             <div class="mt-4 space-y-3 text-[15px] text-bone/80">
-              <p><b>Who:</b> {T.team}, students at {T.school}, testing interest in booking a fitting with Scottex as part of a school project.</p>
+              <p><b>Who:</b> students from {T.school}, testing interest in booking a fitting with Scottex as part of a school project.</p>
               <p><b>What:</b> anonymous steps (which step was reached, the day and time picked, your two answers, if you came from a shared link, phone or computer). Your name and email only if you press "Keep my answer".</p>
               <p><b>Why:</b> only for the project. Not for marketing, and not shared with anyone else.</p>
               <p><b>Where:</b> in a Google Sheet (Google). No cookies, and nothing is stored on your device.</p>
@@ -167,7 +167,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
         </div>
         <div class="md:col-span-5 md:col-start-8">
           <p class="text-bone/85">
-            Nothing was booked or paid. This page is a test by {T.team}, a student team at {T.school}, made together with Scottex.
+            Nothing was booked or paid. This page is a test by students from {T.school}, made together with Scottex.
             Can we ask what stopped you?
           </p>
           <div class="mt-6 grid gap-2" role="group" aria-label="What stopped you?">
@@ -182,11 +182,30 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
       </section>
     </form>
   </div>
+
+  <!-- Before you go: shown when someone closes before confirming -->
+  <div class="bt-exit absolute inset-0 z-10 hidden items-end justify-center bg-void/75 sm:items-center" data-bt-exit
+    role="alertdialog" aria-modal="true" aria-labelledby="bt-exit-title" aria-describedby="bt-exit-text">
+    <div class="w-full max-w-[540px] border-t border-bone/15 bg-coal p-6 sm:border sm:p-10">
+      <p class="label text-ash">Before you go</p>
+      <h3 id="bt-exit-title" class="display mt-4 text-[clamp(26px,3vw,40px)]">Leaving already?</h3>
+      <p id="bt-exit-text" class="mt-4 text-bone/85">Your time isn't held yet, and you're nearly there. What's stopping you?</p>
+      <div class="mt-6 grid gap-2" role="group" aria-label="What's stopping you?">
+        {T.exitReasons.map((r) => <button type="button" class="bt-pick label h-11 justify-start px-4" aria-pressed="false" data-bt-exit-reason={r}>{r}</button>)}
+      </div>
+      <div class="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <button type="button" class="btn btn-rivet w-full justify-between sm:w-[280px]" data-bt-exit-continue>Continue booking <span aria-hidden="true">[ → ]</span></button>
+        <button type="button" class="label min-h-11 text-left text-ash hover:text-white" data-bt-exit-leave>Leave anyway</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style is:global>
   /* Global (not scoped) so the day buttons created by the script get them too. All prefixed bt-. */
   .bt:not(.hidden) { display: flex; }
+  .bt-exit:not(.hidden) { display: flex; }
+  .bt-exit > div { animation: bt-in 600ms var(--ease-out-expo); }
   .bt-thread { width: 0; transition: width 900ms var(--ease-out-expo); }
   .bt-pick {
     display: flex; align-items: center; justify-content: center; gap: 12px;
@@ -209,7 +228,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
   @keyframes bt-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   @media (prefers-reduced-motion: reduce) {
     .bt-thread { transition: none; }
-    .bt-step { animation: none; }
+    .bt-step, .bt-exit > div { animation: none; }
   }
 </style>
 
@@ -263,12 +282,41 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
   }
   document.querySelectorAll<HTMLElement>('[data-book-start]').forEach((a) =>
     a.addEventListener('click', (e) => { e.preventDefault(); open(); }));
-  $$('[data-bt-close]').forEach((b) => b.addEventListener('click', close));
+  // ---------- before you go ----------
+  const exit = $('[data-bt-exit]');
+  let exitReason = '';
+  const exitOpen = () => !exit.classList.contains('hidden');
+  function requestClose() {
+    if (!['time', 'about', 'confirm'].includes(current)) return close();
+    exitReason = '';
+    $$('[data-bt-exit-reason]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    exit.classList.remove('hidden');
+    record('exit_prompt', { step: current });
+    requestAnimationFrame(() => $('[data-bt-exit-continue]').focus());
+  }
+  function stay() {
+    exit.classList.add('hidden');
+    record('exit_continue', { step: current, reason: exitReason });
+    $('[data-bt-close]').focus();
+  }
+  $$('[data-bt-exit-reason]').forEach((b) => b.addEventListener('click', () => {
+    $$('[data-bt-exit-reason]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    exitReason = b.dataset.btExitReason!;
+  }));
+  $('[data-bt-exit-continue]').addEventListener('click', stay);
+  $('[data-bt-exit-leave]').addEventListener('click', () => {
+    record('exit_leave', { step: current, reason: exitReason });
+    exit.classList.add('hidden');
+    close();
+  });
+
+  $$('[data-bt-close]').forEach((b) => b.addEventListener('click', requestClose));
   document.addEventListener('keydown', (e) => {
     if (root.classList.contains('hidden')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'Tab') { // keep focus inside the panel
-      const f = $$('button:not([disabled]), input, a[href], summary').filter((el) => el.offsetParent !== null);
+    if (e.key === 'Escape') { if (exitOpen()) stay(); else requestClose(); }
+    if (e.key === 'Tab') { // keep focus inside the panel (or the pop-up, when it is open)
+      const scope = exitOpen() ? exit : root;
+      const f = Array.from(scope.querySelectorAll<HTMLElement>('button:not([disabled]), input, a[href], summary')).filter((el) => el.offsetParent !== null);
       if (!f.length) return;
       const first = f[0], last = f[f.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
