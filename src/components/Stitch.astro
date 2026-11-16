@@ -1,0 +1,40 @@
+---
+// The embroidery line motif: a single free-hand white line, "stitched" in on scroll.
+// Traced loosely after Benjamin's pocket embroidery (PANT #14). Replace the paths with a real trace when you have one.
+// The visible line is dashed like stitches; a solid copy inside a mask is what gets "drawn" by the scroll script.
+interface Props { class?: string; variant?: 'loops' | 'leaves' }
+const { class: cls = '', variant = 'loops' } = Astro.props;
+
+const paths = {
+  loops: [
+    'M20 230 C 120 60, 300 40, 420 120 S 560 260, 470 270 S 300 150, 360 70 S 520 20, 580 90',
+    'M60 260 C 140 140, 260 120, 330 170 S 380 260, 300 250 S 230 170, 300 120',
+    'M150 40 C 200 120, 210 210, 160 280',
+  ],
+  leaves: [
+    'M40 250 C 160 220, 260 200, 330 130 S 470 40, 560 30',
+    'M200 205 C 190 150, 220 110, 270 95 C 260 140, 240 180, 200 205',
+    'M330 130 C 340 80, 380 50, 430 45 C 410 90, 380 120, 330 130',
+    'M120 120 L 120 160 M 100 140 L 140 140 M 106 126 L 134 154 M 134 126 L 106 154',
+  ],
+};
+const id = `st-${Math.random().toString(36).slice(2, 8)}`;
+---
+<svg class={`stitch ${cls}`} viewBox="0 0 600 300" fill="none" aria-hidden="true" data-stitch>
+  <defs>
+    <mask id={id} maskUnits="userSpaceOnUse" x="-20" y="-20" width="640" height="340">
+      {paths[variant].map((d) => (
+        <path d={d} stroke="#fff" stroke-width="8" stroke-linecap="round" data-stitch-mask />
+      ))}
+    </mask>
+  </defs>
+  <g mask={`url(#${id})`}>
+    {paths[variant].map((d) => (
+      <path d={d} stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="7 5" />
+    ))}
+  </g>
+</svg>
+
+<style>
+  .stitch { color: var(--color-thread); overflow: visible; }
+</style>

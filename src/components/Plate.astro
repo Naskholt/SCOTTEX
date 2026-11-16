@@ -1,0 +1,18 @@
+---
+// Stand-in for a photo that hasn't been shot or uploaded yet. Says what belongs here, so nothing fake is shown.
+interface Props { label: string; ratio?: string; class?: string; tone?: 'coal' | 'indigo' | 'selvedge' }
+const { label, ratio = '4 / 5', class: cls = '', tone = 'coal' } = Astro.props;
+const bg = { coal: 'bg-coal', indigo: 'bg-indigo/40', selvedge: 'bg-selvedge' }[tone];
+---
+<div class={`plate relative overflow-hidden ${bg} ${cls}`} style={`aspect-ratio:${ratio}`} role="img" aria-label={`Photo to come: ${label}`}>
+  <div class="absolute inset-0 plate-weave"></div>
+  <div class="absolute inset-x-4 bottom-4 flex items-end justify-between gap-4">
+    <span class="label text-ash">Photo to come</span>
+    <span class="label text-ash/70 text-right">{label}</span>
+  </div>
+</div>
+<style>
+  .plate-weave {
+    background-image: repeating-linear-gradient(45deg, rgb(232 227 216 / 0.035) 0 1px, transparent 1px 7px);
+  }
+</style>

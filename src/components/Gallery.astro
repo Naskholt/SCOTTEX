@@ -1,0 +1,60 @@
+---
+import { pants } from '../data/pants';
+const numbered = pants.filter((p) => /^\d+$/.test(p.no));
+const featured = pants.filter((p) => p.photos?.length);
+const title = (p: (typeof pants)[number]) => `${p.label} [ ${p.no} ]`;
+---
+<section id="work" class="relative py-[clamp(104px,16vw,220px)]" aria-labelledby="work-title">
+  <div class="wrap">
+    <div class="flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="label mb-10 text-ash">03 — Work</p>
+        <h2 id="work-title" class="display text-[clamp(40px,7vw,112px)]" data-reveal>The archive</h2>
+      </div>
+      <p class="label text-ash" data-reveal>Pant [ {numbered.length} ]</p>
+    </div>
+
+    <!-- Featured pairs: every pair that has photos. Click to open full screen. -->
+    <ul class="mt-16 grid gap-y-20">
+      {featured.map((p, k) => (
+        <li class="pswp-gallery grid gap-4 md:grid-cols-12 md:gap-6" data-pswp data-reveal>
+          {p.photos!.map((ph, j) => (
+            <a href={ph.src} data-pswp-width={ph.w} data-pswp-height={ph.h}
+              class={`group relative block overflow-hidden ${j === 0 ? (k % 2 ? 'md:col-span-5 md:col-start-8' : 'md:col-span-5') : (k % 2 ? 'md:col-span-6 md:col-start-1 md:row-start-1 md:self-end' : 'md:col-span-6 md:col-start-7 md:self-end')}`}
+              aria-label={`Open photo ${j + 1} of ${title(p)}`}>
+              <img src={ph.src} alt={ph.alt} width={ph.w} height={ph.h} loading="lazy"
+                class={`w-full object-cover brightness-[0.88] transition duration-700 group-hover:scale-[1.02] group-hover:brightness-100 ${j === 0 ? 'aspect-[4/5]' : ''}`} />
+            </a>
+          ))}
+          <div class="flex items-baseline justify-between gap-4 border-t border-bone/15 pt-3 md:col-span-12">
+            <span class="label">{title(p)}</span>
+            <span class="label text-ash">{[p.date, p.showCredit ? p.credit : null].filter(Boolean).join(' · ')}</span>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <!-- The full ledger, like a workshop order book. Pairs get a thumbnail once photos are added in src/data/pants.ts -->
+    <div class="mt-[clamp(80px,10vw,140px)]">
+      <p class="label mb-6 text-ash" data-reveal>Order book</p>
+      <ol class="border-t border-bone/15">
+        {pants.map((p) => (
+          <li class="ledger-row grid grid-cols-[5.5rem_1fr_auto] items-center gap-4 border-b border-bone/15 py-4 md:grid-cols-[8rem_1fr_10rem_6rem]" data-reveal>
+            <span class="label text-ash">{p.no === '—' ? 'Special' : `No. ${p.no}`}</span>
+            <span class="display text-[clamp(16px,1.6vw,22px)]">{p.label}</span>
+            <span class="label hidden text-ash md:block">{p.date ?? ''}</span>
+            <span class="label text-right">{p.photos?.length ? <span class="text-rivet">Photos</span> : <span class="text-ash/60">—</span>}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import 'photoswipe/style.css';
+  document.querySelectorAll<HTMLElement>('[data-pswp]').forEach((el) => {
+    const lb = new PhotoSwipeLightbox({ gallery: el, children: 'a', pswpModule: () => import('photoswipe'), bgOpacity: 0.96 });
+    lb.init();
+  });
+</script>

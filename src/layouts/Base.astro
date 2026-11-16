@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import { site } from '../data/site';
+interface Props { title?: string; description?: string }
+const {
+  title = 'SCOTTEX — Custom jeans, made by hand in Nørrebro',
+  description = 'Custom-fit jeans made by hand by Benjamin in Nørrebro, Copenhagen. Japanese and Italian surplus denim, free-hand embroidery, free repairs. Book a fitting.',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'ClothingStore',
+  name: 'Scottex',
+  description,
+  url: canonical.href,
+  address: { '@type': 'PostalAddress', streetAddress: site.address, addressLocality: 'København N', postalCode: '2200', addressCountry: 'DK' },
+  openingHours: 'Mo-Fr 10:00-17:00',
+  priceRange: site.price,
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0b0a" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={new URL('/images/og.jpg', Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js-motion');
+    </script>
+  </head>
+  <body id="top">
+    <a href="#main" class="label sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:bg-bone focus:p-3 focus:text-void">Skip to content</a>
+    <Nav />
+    <main id="main"><slot /></main>
+    <div class="grain" aria-hidden="true"></div>
+    <script>
+      import '../scripts/motion';
+    </script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+---
+const links = [
+  { href: '#story', label: 'Story', no: '01' },
+  { href: '#process', label: 'Process', no: '02' },
+  { href: '#work', label: 'Work', no: '03' },
+  { href: '#book', label: 'Book', no: '04' },
+];
+---
+<header id="nav" class="fixed inset-x-0 top-0 z-50 transition-transform duration-500" style="transition-timing-function: var(--ease-out-expo)">
+  <div class="wrap flex h-16 items-center justify-between md:h-20">
+    <button id="menu-btn" class="label flex min-h-11 items-center gap-2 pr-4" aria-expanded="false" aria-controls="menu">
+      <span aria-hidden="true" class="inline-block w-4 border-t border-bone"></span> Menu
+    </button>
+    <a href="#top" class="display nav-mark text-[15px] md:text-[17px]" aria-label="Scottex, back to top">Scottex</a>
+    <a href="#book" class="label flex min-h-11 items-center pl-4">Book <span class="ml-2 text-rivet">[ → ]</span></a>
+  </div>
+  <nav id="menu" class="menu fixed inset-0 -z-10 hidden bg-void/95 backdrop-blur-sm" aria-label="Chapters">
+    <ul class="wrap flex h-full flex-col justify-center gap-4 md:gap-6">
+      {links.map((l) => (
+        <li>
+          <a href={l.href} class="group flex items-baseline gap-6" data-menu-link>
+            <span class="label text-ash">{l.no}</span>
+            <span class="display text-[clamp(40px,9vw,120px)] transition-colors group-hover:text-rivet">{l.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</header>
+<script>
+  const btn = document.getElementById('menu-btn')!;
+  const menu = document.getElementById('menu')!;
+  const nav = document.getElementById('nav')!;
+  const setOpen = (open: boolean) => {
+    menu.classList.toggle('hidden', !open);
+    btn.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('menu-open', open);
+    window.dispatchEvent(new CustomEvent(open ? 'scottex:lock' : 'scottex:unlock'));
+  };
+  btn.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+  menu.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+
+  // Hide on scroll down, show on scroll up
+  let last = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (document.documentElement.classList.contains('menu-open')) return;
+    nav.style.transform = y > last && y > 200 ? 'translateY(-100%)' : 'translateY(0)';
+    last = y;
+  }, { passive: true });
+</script>

@@ -1,0 +1,62 @@
+---
+import Plate from './Plate.astro';
+import Stitch from './Stitch.astro';
+const steps = [
+  { t: 'Consultation', d: 'We talk about how you want them to fit and feel. Benjamin takes your measurements and builds a 3D avatar of your body in CLO 3D.', media: { plate: 'Measuring a client' } },
+  { t: 'Pattern', d: 'The pattern is drafted from your measurements, not from a size chart.', media: { plate: 'CLO 3D avatar on screen' } },
+  { t: 'Fabric', d: 'You choose from surplus denim from Japan and Italy. Each pair takes 2.5 to 3 metres. Black denim and unusual cloth are house favourites.', media: { plate: 'Rolls of surplus denim' } },
+  { t: 'Cut & sew', d: 'Cut and sewn by Benjamin in the studio, across more than twenty sewing machines.', media: { plate: 'Needle and copper thread' } },
+  { t: 'Embroidery', d: 'A free-hand embroidered line, usually on the back pockets. Every one is different.', media: { img: '/images/pant-14-pocket.webp', alt: 'Close-up of free-hand embroidery on a back pocket', w: 2000, h: 800 } },
+  { t: 'Fitting', d: 'You try them on in the studio. After that, repairs are free and the quality is guaranteed.', media: { img: '/images/pant-14-back.webp', alt: 'The finished pair from the back', w: 2000, h: 2000 } },
+];
+---
+<section id="process" class="process relative bg-selvedge" aria-labelledby="process-title">
+  <div class="process-pin relative">
+    <div class="process-head wrap flex items-baseline justify-between pt-24">
+      <p class="label text-ash">02 — Process</p>
+      <p class="process-counter label hidden text-ash">Step [ <span data-step-now>1</span> / {steps.length} ]</p>
+    </div>
+    <h2 id="process-title" class="sr-only">How a pair is made</h2>
+
+    <!-- Progress line -->
+    <div class="process-progress absolute bottom-0 left-0 hidden h-px w-full origin-left scale-x-0 bg-rivet md:block" aria-hidden="true"></div>
+
+    <ol class="process-steps wrap grid gap-24 pb-32 pt-16 md:gap-32">
+      {steps.map((s, i) => (
+        <li class="process-step min-w-0 md:grid md:grid-cols-12 md:items-center md:gap-6" data-step={i}>
+          <div class="process-media md:col-span-5 md:col-start-2">
+            {s.media.img ? (
+              <img src={s.media.img} alt={s.media.alt} width={s.media.w} height={s.media.h} loading="lazy"
+                class="aspect-[4/5] w-full object-cover" />
+            ) : (
+              <Plate label={s.media.plate!} ratio="4 / 5" tone="indigo" />
+            )}
+          </div>
+          <div class="process-text mt-8 md:col-span-4 md:col-start-8 md:mt-0">
+            <p class="label text-rivet">Step [ {i + 1} / {steps.length} ]</p>
+            <h3 class="display mt-4 text-[clamp(26px,5vw,80px)]">{s.t}</h3>
+            <p class="mt-6 max-w-[40ch]">{s.d}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <div class="process-end wrap relative grid min-h-[80svh] place-items-center py-32 text-center">
+    <Stitch class="pointer-events-none absolute left-1/2 top-1/2 w-[min(760px,92vw)] -translate-x-1/2 -translate-y-1/2 opacity-40" variant="leaves" />
+    <p class="display relative text-[clamp(32px,6vw,96px)]" data-reveal>About 18 hours.<br />One pair.<br /><span class="text-rivet">2.500 kr.</span></p>
+  </div>
+</section>
+
+<style>
+  /* Pinned layout only when motion runs on a wide screen; otherwise the steps simply stack. */
+  @media (min-width: 768px) {
+    :global(.js-motion) .process-pin { height: 100svh; overflow: hidden; }
+    :global(.js-motion) .process-head { position: absolute; inset-inline: 0; top: 0; padding-top: 7rem; z-index: 2; }
+    :global(.js-motion) .process-counter { display: block; }
+    :global(.js-motion) .process-steps { display: block; padding: 0; }
+    :global(.js-motion) .process-step { position: absolute; inset: 0; padding-inline: max(16px, 6vw); }
+    :global(.js-motion) .process-media img { max-height: 64svh; width: auto; margin-inline: auto; }
+    :global(.js-motion) .process-media .plate { width: min(100%, calc(64svh * 0.8)); margin-inline: auto; }
+  }
+</style>

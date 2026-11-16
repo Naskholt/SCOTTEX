@@ -1,0 +1,42 @@
+---
+import { site } from '../data/site';
+---
+<section id="intro" class="intro relative" aria-label="Scottex">
+  <div class="intro-pin relative h-svh overflow-hidden">
+    <!-- Hero image (Rick Owens: one full-bleed photograph) -->
+    <figure class="intro-media absolute inset-0 m-0">
+      <img
+        src="/images/pant-14-back.webp"
+        alt="A pair of raw indigo Scottex jeans from the back, white free-hand embroidery on both back pockets"
+        width="2000" height="2000"
+        class="h-full w-full object-cover object-[50%_35%] grayscale-[0.35] brightness-[0.62] contrast-[1.1]"
+        fetchpriority="high"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-void/40"></div>
+    </figure>
+    <!-- Black curtain with the wordmark (Tomas Than) -->
+    <div class="intro-curtain absolute inset-0 place-items-center bg-void" aria-hidden="true">
+      <p class="intro-mark display text-center text-[clamp(44px,11vw,180px)] leading-none">Scottex</p>
+    </div>
+    <div class="intro-copy wrap absolute inset-x-0 bottom-10 flex flex-col gap-6 md:bottom-14 md:flex-row md:items-end md:justify-between">
+      <h1 class="max-w-[22ch] font-serif text-[clamp(26px,3.4vw,44px)] italic leading-[1.1]">
+        <span class="sr-only">Scottex. </span>Custom jeans, made by hand in Nørrebro.
+      </h1>
+      <ul class="label flex gap-6 text-ash md:flex-col md:items-end md:gap-1">
+        <li><a class="hover:text-bone" href="#story">Story</a></li>
+        <li><a class="hover:text-bone" href="#work">Work</a></li>
+        <li><a class="hover:text-bone" href="#book">Book</a></li>
+      </ul>
+    </div>
+    <div aria-hidden="true" class="label absolute left-1/2 top-[calc(50%+clamp(44px,11vw,180px)*0.8)] -translate-x-1/2 text-ash intro-hint">
+      Since {site.since} · Scroll
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro-curtain, .intro-hint { display: none; }
+  :global(.js-motion) .intro-curtain { display: grid; }
+  :global(.js-motion) .intro-hint { display: block; }
+  :global(.js-motion) .intro-copy { opacity: 0; }
+</style>

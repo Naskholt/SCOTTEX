@@ -1,0 +1,56 @@
+---
+import Stitch from './Stitch.astro';
+import Plate from './Plate.astro';
+import { site } from '../data/site';
+const facts = [
+  { k: 'Since', v: String(site.since) },
+  { k: 'Pairs made', v: `${site.pairsMade}` },
+  { k: 'Hours a pair', v: `~${site.hoursPerPair}` },
+  { k: 'Machines', v: '20+' },
+];
+---
+<section id="story" class="relative py-[clamp(104px,16vw,220px)]">
+  <div class="wrap">
+    <p class="label mb-10 text-ash" data-reveal>01 — Story</p>
+    <div class="grid gap-y-16 md:grid-cols-12 md:gap-x-6">
+      <div class="md:col-span-7">
+        <h2 class="display text-[clamp(40px,7vw,112px)]" data-reveal>One maker.<br />One body.<br />One pair.</h2>
+        <Stitch class="mt-10 w-[min(520px,90%)]" variant="loops" />
+      </div>
+      <div class="flex flex-col gap-6 md:col-span-4 md:col-start-9 md:pt-24">
+        <p data-reveal>
+          Scottex is Benjamin's one-man jeans label. Since {site.since} he has cut, sewn and finished every pair himself, in a studio on Nørrebrogade that you enter through the shop SABOT.
+        </p>
+        <p data-reveal>
+          Each pair is drafted for one body. The denim is surplus fabric from Japan and Italy, left over from other companies, so some fabrics only ever make a few pairs.
+        </p>
+        <p data-reveal>
+          The look sits somewhere between dark Scandinavian myth and American workwear: heavy cloth, copper thread, and a free-hand embroidered line on the back pockets that is never the same twice.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-[clamp(80px,12vw,168px)] grid gap-6 md:grid-cols-12">
+      <figure class="md:col-span-7 md:col-start-1" data-reveal data-parallax>
+        <img src="/images/pant-14-pocket.webp" alt="Back pocket close-up: copper topstitching and a white free-hand embroidered line" width="2000" height="800" loading="lazy" class="w-full" />
+        <figcaption class="label mt-3 text-ash">Pant [ 14 ] — back pocket, free-hand embroidery</figcaption>
+      </figure>
+      <div class="md:col-span-4 md:col-start-9 md:mt-40" data-reveal>
+        <Plate label="Benjamin at the machine" ratio="4 / 5" tone="selvedge" />
+      </div>
+    </div>
+
+    <blockquote class="mx-auto mt-[clamp(80px,12vw,168px)] max-w-[24ch] text-center font-serif text-[clamp(28px,4vw,56px)] italic leading-[1.15]" data-reveal>
+      About eighteen hours of handwork go into every pair.
+    </blockquote>
+
+    <dl class="mt-[clamp(64px,8vw,104px)] grid grid-cols-2 border-t border-bone/15 md:grid-cols-4">
+      {facts.map((f) => (
+        <div class="border-b border-bone/15 py-6 pr-4 md:border-b-0" data-reveal>
+          <dt class="label text-ash">{f.k}</dt>
+          <dd class="display mt-2 text-[clamp(28px,3.5vw,48px)]">{f.v}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
