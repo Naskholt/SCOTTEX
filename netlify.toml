@@ -1,0 +1,7 @@
+# Netlify build settings. The booking test is part of the home page, so it deploys with every build.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "24"

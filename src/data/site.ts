@@ -41,7 +41,7 @@ export const booking = {
   ],
 };
 
-// Booking TEST (fake-door), only on /test — the link the student team shares. Nothing is booked or paid there.
+// Booking TEST (fake-door) on the home page: "Start your pair" opens it. Nothing is booked or paid.
 // See tools/booking-test/README.md for the Google Sheet setup.
 export const bookingTest = {
   // Google Apps Script web app URL (ends in /exec). Empty = the test still works but records nothing.

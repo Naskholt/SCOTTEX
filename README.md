@@ -21,7 +21,7 @@ npm run build    # production build into dist/
 | Process steps | `src/components/Process.astro` |
 | Colours and fonts | `src/styles/global.css` (tokens from `DESIGN.md`) |
 | Animation | `src/scripts/motion.ts` |
-| Booking test (fake-door, only on `/test`) | `src/components/BookingTest.astro`, settings in `src/data/site.ts` → `bookingTest`, Sheet setup in `tools/booking-test/README.md` |
+| Booking test (fake-door, opens from "Start your pair") | `src/components/BookingTest.astro`, settings in `src/data/site.ts` → `bookingTest`, Sheet setup in `tools/booking-test/README.md` |
 
 ## Still to do
 

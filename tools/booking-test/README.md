@@ -1,9 +1,8 @@
 # Booking test (fake-door) — setup
 
-The test lives at **`/test`** on the site (e.g. `https://<your-site>/test?utm_source=ig`).
-The real home page `/` is not affected, and `/test` is hidden from search engines.
+The test is on the home page itself — share the normal link, e.g. `https://<your-site>/?utm_source=ig`.
 
-On `/test`, "Start your pair" opens a booking panel: find a time → tell me about you → confirm (250 kr).
+"Start your pair" (in the hero and in Book) opens a booking panel: find a time → tell me about you → confirm (250 kr).
 Pressing **Pay** shows an honest reveal: nothing was booked or paid, it's a test by our student group at EK.
 Visitors then choose **Keep my answer** or **Delete my details**. "Not now" asks what stopped them.
 
@@ -27,7 +26,7 @@ One row per event in the **Events** tab:
 
 | event | when |
 | --- | --- |
-| `view` | someone opens the /test page |
+| `view` | someone opens the site |
 | `open` | they press "Start your pair" |
 | `time_picked` | they picked a day and time and pressed Next |
 | `details_done` | they answered the two questions and pressed Next (answers only, no name/email) |
@@ -43,7 +42,7 @@ One row per event in the **Events** tab:
 
 Each visit has a random `visitor` id (kept in memory only, no cookies), so you can follow one person's path.
 `utm_source` etc. come from the link you share — use a different tag per channel, e.g.
-`/test?utm_source=ig`, `/test?utm_source=tiktok`, `/test?utm_source=qr`.
+`/?utm_source=ig`, `/?utm_source=tiktok`, `/?utm_source=qr`.
 
 **Conversion:** `pay_click` visitors ÷ `open` visitors = share who would pay the deposit.
 
@@ -51,5 +50,5 @@ While `sheetUrl` is empty, nothing is sent; the events are printed in the browse
 
 ## 3. When the project ends
 
-Delete the sheet (the privacy note promises this), and remove `src/pages/test.astro` and
+Delete the sheet (the privacy note promises this), and remove `<BookingTest />` from `src/pages/index.astro` and
 `src/components/BookingTest.astro` if the test is no longer needed.
