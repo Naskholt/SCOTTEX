@@ -9,7 +9,7 @@ const social = [
   site.tiktok && { href: site.tiktok, label: 'TikTok' },
   site.email && { href: `mailto:${site.email}`, label: 'Email' },
 ].filter(Boolean) as { href: string; label: string }[];
-const link = 'text-white underline-offset-4 hover:text-rivet hover:underline';
+const link = 'inline-flex min-h-11 items-center text-white underline-offset-4 hover:text-rivet hover:underline md:inline md:min-h-0';
 ---
 <footer class="relative bg-void">
   <div class="wrap grid gap-12 py-[clamp(48px,6vw,88px)] sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
@@ -30,7 +30,7 @@ const link = 'text-white underline-offset-4 hover:text-rivet hover:underline';
 
     <div class="lg:col-span-3">
       <p class="label text-ash">Contact</p>
-      <ul class="mt-3 space-y-1">
+      <ul class="mt-1 md:mt-3 md:space-y-1">
         {tel && <li><a class={link} href={tel}>{site.phone}</a></li>}
         {social.map((l) => <li><a class={link} href={l.href} rel="me">{l.label}</a></li>)}
       </ul>
