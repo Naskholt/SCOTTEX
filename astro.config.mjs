@@ -3,6 +3,6 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://scottex.vercel.app',
+  site: 'https://scottex-ek.netlify.app',
   vite: { plugins: [tailwindcss()] },
 });
