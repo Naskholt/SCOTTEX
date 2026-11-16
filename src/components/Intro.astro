@@ -58,7 +58,7 @@ import { site, bookingTest } from '../data/site';
       const email = input.value.trim();
       if (!email) return;
       const sheet = form.dataset.sheet;
-      const body = JSON.stringify({ event: 'newsletter', email, ts: new Date().toISOString(),
+      const body = JSON.stringify({ event: 'newsletter', email, visitor: (window as any).scottexVisitor || '', ts: new Date().toISOString(),
         utm_source: new URLSearchParams(location.search).get('utm_source') || '', referrer: document.referrer,
         device: matchMedia('(max-width: 767px)').matches ? 'phone' : 'computer' });
       if (sheet) {

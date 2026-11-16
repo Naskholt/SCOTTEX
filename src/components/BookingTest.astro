@@ -242,6 +242,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
 
   // One random id per page visit, kept in memory only (no cookies, nothing stored on the device).
   const visitor = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  (window as any).scottexVisitor = visitor; // so the hero's newsletter sign-up shares the same id
   const qs = new URLSearchParams(location.search);
   const state = { day: '', dayLabel: '', time: '', matters: [] as string[], budget: '', name: '', email: '', reason: '' };
 

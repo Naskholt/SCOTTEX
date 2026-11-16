@@ -6,19 +6,36 @@ The test is on the home page itself — share the normal link, e.g. `https://<yo
 Pressing **Pay** shows an honest reveal: nothing was booked or paid, it's a test by our student group at EK.
 Visitors then choose **Keep my answer** or **Delete my details**. "Not now" asks what stopped them.
 
-## 1. Make the Google Sheet (5 min)
+## 1. Make the Google Sheet (5–10 min)
 
-1. Create a new Google Sheet, e.g. "Scottex booking test".
-2. **Extensions → Apps Script**. Delete what's there and paste everything from `apps-script.gs`. Save.
-3. **Deploy → New deployment** → type **Web app**.
+1. Go to [sheets.new](https://sheets.new) (signed in to the Google account the group will use). Name it "Scottex booking test".
+2. **Extensions → Apps Script**. Delete what's there, paste everything from `apps-script.gs`, and press **Save** (💾).
+3. In the bar at the top, pick the function **`setup`** and press **Run**.
+   Google asks for permission: **Review permissions** → pick your account → **Advanced** →
+   **Go to … (unsafe)** → **Allow**. (It says "unsafe" because you wrote the script yourself; it only touches this sheet.)
+   Back in the sheet you now have two tabs: **Summary** and **Events**.
+4. **Deploy → New deployment** → the gear ⚙ → **Web app**.
+   - Description: anything, e.g. "v1"
    - Execute as: **Me**
    - Who has access: **Anyone**
-   - Deploy, allow the permissions, and copy the **Web app URL** (ends in `/exec`).
-4. Open that URL in a browser: it should say "Scottex booking test is listening."
-5. Paste the URL into `bookingTest.sheetUrl` in `src/data/site.ts`, and fill in `bookingTest.contact`
+   - **Deploy**, and copy the **Web app URL** (ends in `/exec`).
+5. Open that URL in a browser: it should say "Scottex booking test is listening."
+6. Paste the URL into `bookingTest.sheetUrl` in `src/data/site.ts`, and fill in `bookingTest.contact`
    (an email people can write to about their data). Rebuild and deploy.
 
-If you change the script later: **Deploy → Manage deployments → edit → New version**, or the old code keeps running.
+If you change the script later: **Deploy → Manage deployments → ✏️ edit → Version: New version → Deploy**, or the old code keeps running.
+To rebuild the Summary tab (e.g. after changing the answer options), run `setup` again; the Events rows are kept.
+
+### The Summary tab
+
+Updates by itself. It shows:
+- **Funnel**: unique visitors who visited → signed up → pressed "Start your pair" → picked a time → answered → pressed Pay
+  (willing to put down the deposit) → kept their answer, with the share at each step.
+- **Budget** and **What matters to them**.
+- **Why they tried to leave** (the "Before you go" pop-up), split by who stayed and who left.
+- **What stopped them** after "Not now", and **the step where they left**.
+- **Where visitors came from** (the `?utm_source=` tag) and phone/computer.
+- On the right: the **newsletter emails** and the people who **kept their answer** (name, email, day, time, budget).
 
 ## 2. What gets recorded
 
@@ -41,7 +58,8 @@ One row per event in the **Events** tab:
 | `close` | they closed the panel (`step` says where) |
 | `newsletter` | someone signed up in the hero's "News on new fabrics" field (has their email) |
 
-Each visit has a random `visitor` id (kept in memory only, no cookies), so you can follow one person's path.
+Each visit has a random `visitor` id (kept in memory only, no cookies), so you can follow one person's path,
+including a newsletter sign-up in the same visit.
 `utm_source` etc. come from the link you share — use a different tag per channel, e.g.
 `/?utm_source=ig`, `/?utm_source=tiktok`, `/?utm_source=qr`.
 
