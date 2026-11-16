@@ -8,9 +8,9 @@ const links = [
   site.email && { href: `mailto:${site.email}`, label: 'Email' },
 ].filter(Boolean) as { href: string; label: string }[];
 ---
-<footer class="relative grid min-h-svh grid-rows-[1fr_auto] bg-void pt-24">
-  <div class="wrap grid place-items-center">
-    <Logo class="mx-auto text-center text-bone/90" text="clamp(44px,12.5vw,220px)" img="clamp(160px,34vw,460px)" />
+<footer class="relative bg-void pt-[clamp(64px,8vw,104px)]">
+  <div class="wrap grid place-items-center pb-[clamp(48px,6vw,80px)]">
+    <Logo class="mx-auto text-center text-bone/90" text="clamp(22px,2.4vw,32px)" img="clamp(44px,4vw,60px)" />
   </div>
   <div class="wrap flex flex-col gap-6 border-t border-bone/15 py-8 md:flex-row md:items-center md:justify-between">
     <p class="label text-ash">Custom jeans · {site.address} · {site.hours}</p>

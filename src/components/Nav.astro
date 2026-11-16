@@ -7,7 +7,7 @@ const links = [
   { href: '#book', label: 'Book', no: '04' },
 ];
 ---
-<header id="nav" class="fixed inset-x-0 top-0 z-50 transition-transform duration-500" style="transition-timing-function: var(--ease-out-expo)">
+<header id="nav" class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-colors duration-500">
   <div class="wrap flex h-16 items-center justify-between md:h-20">
     <button id="menu-btn" class="label flex min-h-11 items-center gap-2 pr-4" aria-expanded="false" aria-controls="menu">
       <span aria-hidden="true" class="inline-block w-4 border-t border-bone"></span> Menu
@@ -42,12 +42,13 @@ const links = [
   menu.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
 
-  // Hide on scroll down, show on scroll up
-  let last = 0;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-    if (document.documentElement.classList.contains('menu-open')) return;
-    nav.style.transform = y > last && y > 200 ? 'translateY(-100%)' : 'translateY(0)';
-    last = y;
-  }, { passive: true });
+  // Always visible. Gets a solid background once the page has scrolled, so it stays readable over content.
+  const solid = () => {
+    const on = window.scrollY > 40;
+    nav.classList.toggle('bg-void/90', on);
+    nav.classList.toggle('border-bone/10', on);
+    nav.classList.toggle('border-transparent', !on);
+  };
+  window.addEventListener('scroll', solid, { passive: true });
+  solid();
 </script>

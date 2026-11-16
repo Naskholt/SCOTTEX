@@ -28,7 +28,7 @@ Rules: Rivet at most once per screen. No gradients except photo scrims. Dark onl
 Fonts are self-hosted via @fontsource (see src/styles/global.css).
 
 ## 4. Components
-- Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right. Hides on scroll down.
+- Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right. Always visible; solid Void background after the first scroll.
 - Front fold: from Benjamin's current site. B/W thread photo fading to black, stitched logo at ~22% height, one serif line, a Bone 'Book a fitting' button.
 - Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
 - Buttons (.btn): 1px Bone outline, no radius, Plex Mono uppercase, 48px tall. .btn-rivet for booking.
