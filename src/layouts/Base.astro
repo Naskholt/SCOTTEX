@@ -17,6 +17,7 @@ const ld = {
   url: canonical.href,
   address: { '@type': 'PostalAddress', streetAddress: site.address, addressLocality: 'København N', postalCode: '2200', addressCountry: 'DK' },
   openingHours: 'Mo-Fr 10:00-17:00',
+  ...(site.phone && { telephone: site.phone.replace(/\s/g, '') }),
 };
 ---
 <!doctype html>

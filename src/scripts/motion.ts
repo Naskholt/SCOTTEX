@@ -39,6 +39,14 @@ if (!reduce) {
     });
   });
 
+  // Seams between sections: the dashed thread sews itself downwards as it passes
+  gsap.utils.toArray<HTMLElement>('.seam-line').forEach((el) => {
+    gsap.fromTo(el, { scaleY: 0, transformOrigin: 'top' }, {
+      scaleY: 1, ease: 'none',
+      scrollTrigger: { trigger: el, start: 'top 85%', end: 'bottom 45%', scrub: true },
+    });
+  });
+
   // Gentle parallax
   gsap.utils.toArray<HTMLElement>('[data-parallax]').forEach((el) => {
     gsap.fromTo(el, { yPercent: 4 }, {

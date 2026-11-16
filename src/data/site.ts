@@ -16,6 +16,7 @@ export const site = {
   instagram: 'https://www.instagram.com/scottex___/',
   tiktok: '',
   email: '',
+  phone: '+45 92 10 20 30', // shown as written; the call link uses the digits only
   // Newsletter form in the front fold. Paste a form endpoint (e.g. Buttondown, Mailchimp, Formspree) to show it.
   newsletter: '',
 };

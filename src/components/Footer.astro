@@ -1,24 +1,44 @@
 ---
+// The one place for practical info: where, when, how to reach him. (The Book section no longer repeats it.)
 import { site } from '../data/site';
 import Logo from './Logo.astro';
 const year = new Date().getFullYear();
-const links = [
+const tel = site.phone ? `tel:${site.phone.replace(/\s/g, '')}` : '';
+const social = [
   site.instagram && { href: site.instagram, label: 'Instagram' },
   site.tiktok && { href: site.tiktok, label: 'TikTok' },
   site.email && { href: `mailto:${site.email}`, label: 'Email' },
 ].filter(Boolean) as { href: string; label: string }[];
+const link = 'text-white underline-offset-4 hover:text-rivet hover:underline';
 ---
-<footer class="relative bg-void pt-[clamp(64px,8vw,104px)]">
-  <div class="wrap grid place-items-center pb-[clamp(48px,6vw,80px)]">
-    <Logo class="mx-auto text-center text-bone/90" text="clamp(22px,2.4vw,32px)" img="clamp(44px,4vw,60px)" />
-  </div>
-  <div class="wrap flex flex-col gap-6 border-t border-bone/15 py-8 md:flex-row md:items-center md:justify-between">
-    <p class="label text-ash">Custom jeans · {site.address} · {site.hours}</p>
-    {links.length > 0 && (
-      <ul class="label flex gap-6">
-        {links.map((l) => <li><a class="font-medium text-white hover:text-rivet" href={l.href} rel="me">{l.label}</a></li>)}
+<footer class="relative bg-void">
+  <div class="wrap grid gap-12 py-[clamp(48px,6vw,88px)] sm:grid-cols-2 lg:grid-cols-12 lg:gap-6">
+    <div class="lg:col-span-4">
+      <Logo class="text-bone/90" text="clamp(22px,2.4vw,32px)" img="clamp(40px,3.4vw,52px)" />
+    </div>
+
+    <div class="lg:col-span-3">
+      <p class="label text-ash">Studio</p>
+      <p class="mt-3">{site.address}<br />{site.city}</p>
+      <p class="mt-1 text-bone/60">{site.entrance}</p>
+    </div>
+
+    <div class="lg:col-span-2">
+      <p class="label text-ash">Hours</p>
+      <p class="mt-3">{site.hours}</p>
+    </div>
+
+    <div class="lg:col-span-3">
+      <p class="label text-ash">Contact</p>
+      <ul class="mt-3 space-y-1">
+        {tel && <li><a class={link} href={tel}>{site.phone}</a></li>}
+        {social.map((l) => <li><a class={link} href={l.href} rel="me">{l.label}</a></li>)}
       </ul>
-    )}
-    <p class="label text-ash">© {year} Scottex</p>
+    </div>
+  </div>
+
+  <div class="wrap flex flex-wrap justify-between gap-x-6 gap-y-2 border-t border-bone/10 py-6">
+    <p class="label whitespace-nowrap text-ash">© {year} Scottex</p>
+    <p class="label whitespace-nowrap text-ash">Custom jeans · Nørrebro</p>
   </div>
 </footer>

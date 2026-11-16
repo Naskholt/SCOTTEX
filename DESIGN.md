@@ -10,9 +10,9 @@ Maison Margiela (film grain, mono labels), Yohji Yamamoto (film loop behind grai
 Ann Demeulemeester (low-key split panels), dustinbrett.com (one playful window-style interaction).
 
 ## 2. Colour palette & roles
-- Void        #0B0B0A  page background, intro, most sections
-- Coal        #161614  raised surfaces, cards, booking panel
-- Selvedge    #1C171A  near-black waistband denim; alternate section background (Process)
+- Void        #0B0B0A  the ONE background: every section, the footer and the booking test are Void
+- Coal        #161614  only for small raised surfaces (e.g. the booking test's pop-up), never a section
+- Selvedge    #1C171A  near-black waistband denim; subtle fills only, never a section background
 - Raw indigo  #3E4A63  rare secondary surface, never text (from the raw denim of PANT #14)
 - Bone        #E8E3D8  primary text and lines on dark
 - Ash         #8C877D  secondary text, captions, counters
@@ -29,7 +29,7 @@ Fonts are self-hosted via @fontsource (see src/styles/global.css).
 
 ## 4. Components
 - Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right, all Bone. Always visible, always transparent (no background).
-- Front fold copy is Benjamin's own ("Cut for your body. Sewn by hand in Nørrebro."), never the other group's wording.
+- Front fold copy is Benjamin's own ("Stitched to your shape."), never the other group's wording.
 - Book: ONE booking button. Three steps: find a time → booking questions (what matters, budget, name, email) → 250 kr refundable deposit. All in one Cal.com event.
 - Front fold: B/W sewing machine photo (public/images/hero.webp) fading to black, stitched logo centred at ~24% height. Split base: Garamond italic line bottom-left with a mono label above, .btn-rivet 'Start your pair [ → ]' bottom-right, dashed thread running down the centre as scroll cue. Not centred-form style.
 - Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
@@ -37,6 +37,7 @@ Fonts are self-hosted via @fontsource (see src/styles/global.css).
 - Chapter marker: "01 — STORY" in Plex Mono, Ash, top-left of each section.
 - Plate (src/components/Plate.astro): honest stand-in for a photo not shot yet. Replace, never fake.
 - Stitch (src/components/Stitch.astro): the embroidery-line motif, draws itself on scroll.
+- Seam (src/components/Seam.astro): a short dashed thread between every section, centred, continuing the front fold's scroll cue. Sections share one Void background and tight spacing so the page reads as one continuous seam.
 - Grain: fixed full-screen noise at ~7% opacity.
 
 ## 5. Layout

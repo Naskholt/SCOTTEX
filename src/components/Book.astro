@@ -7,7 +7,7 @@ import { site, booking } from '../data/site';
 const fallback = site.instagram || (site.email ? `mailto:${site.email}` : '');
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
-<section id="book" class="relative overflow-hidden bg-coal py-[clamp(104px,14vw,200px)]" aria-labelledby="book-title">
+<section id="book" class="relative overflow-hidden bg-void py-[clamp(56px,7vw,104px)]" aria-labelledby="book-title">
   <Stitch class="pointer-events-none absolute -right-24 top-16 w-[min(720px,110vw)] opacity-30" variant="loops" />
   <div class="wrap relative">
     <p class="label mb-10 text-ash">04 — Book</p>
@@ -52,11 +52,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       </div>
     )}
 
-    <div class="mt-20 grid gap-8 border-t border-bone/15 pt-10 md:grid-cols-3" data-reveal>
-      <div><p class="label text-ash">Studio</p><p class="mt-2">{site.address}<br />{site.city}</p></div>
-      <div><p class="label text-ash">Entrance</p><p class="mt-2">{site.entrance}</p></div>
-      <div><p class="label text-ash">Hours</p><p class="mt-2">{site.hours}</p></div>
-    </div>
   </div>
 </section>
 

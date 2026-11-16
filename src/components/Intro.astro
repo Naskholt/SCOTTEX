@@ -4,7 +4,7 @@
 import Logo from './Logo.astro';
 import { site } from '../data/site';
 ---
-<section id="intro" class="intro relative isolate flex h-svh min-h-[620px] flex-col overflow-hidden bg-black" aria-label="Scottex">
+<section id="intro" class="intro relative isolate flex h-svh min-h-[620px] flex-col overflow-hidden bg-void" aria-label="Scottex">
   <div class="intro-bg absolute inset-0 -z-10" aria-hidden="true">
     <img src="/images/hero.webp" alt="" width="1199" height="1496" fetchpriority="high"
       class="h-full w-full object-cover object-[50%_30%] grayscale" />
@@ -27,7 +27,7 @@ import { site } from '../data/site';
         Custom fit · in-house production
       </p>
       <h1 class="mt-5 max-w-[14ch] font-serif text-[clamp(38px,5.4vw,84px)] italic leading-[0.98] tracking-[-0.01em]">
-        Cut for your body. Sewn by hand in&nbsp;Nørrebro.
+        Stitched to<br />your shape.
       </h1>
     </div>
 
@@ -54,7 +54,7 @@ import { site } from '../data/site';
   /* Dark at the top for the nav, open through the middle, black under the text. */
   .intro-scrim {
     background:
-      linear-gradient(180deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.05) 14%, rgb(0 0 0 / 0.2) 34%, rgb(0 0 0 / 0.78) 58%, rgb(0 0 0 / 0.95) 76%, #000 100%),
+      linear-gradient(180deg, rgb(0 0 0 / 0.55) 0%, rgb(0 0 0 / 0.05) 14%, rgb(0 0 0 / 0.2) 34%, rgb(0 0 0 / 0.78) 58%, rgb(0 0 0 / 0.95) 76%, var(--color-void) 100%),
       linear-gradient(90deg, rgb(0 0 0 / 0.6) 0%, transparent 28%, transparent 72%, rgb(0 0 0 / 0.6) 100%);
   }
   :global(.js-motion) .intro-logo, :global(.js-motion) .intro-body > * > * { opacity: 0; }
