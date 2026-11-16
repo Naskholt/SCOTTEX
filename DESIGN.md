@@ -30,7 +30,7 @@ Fonts are self-hosted via @fontsource (see src/styles/global.css).
 ## 4. Components
 - Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right, all Bone. Always visible, always transparent (no background).
 - Front fold copy is Benjamin's own ("Stitched to your shape."), never the other group's wording.
-- Book: ONE booking button. Three steps: find a time → booking questions (what matters, budget, name, email) → 250 kr refundable deposit. All in one Cal.com event.
+- Book: an invitation, centred. Small heading, one Garamond italic line ("Fittings are by appointment, in my studio on Nørrebrogade."), ONE booking button, a mono label (30 min · 250 kr deposit). No step grid on the page; the booking panel walks through find a time → questions (what matters, budget, name, email) → 250 kr refundable deposit.
 - Front fold: B/W sewing machine photo (public/images/hero.webp) fading to black, stitched logo centred at ~24% height. Split base: Garamond italic line bottom-left with a mono label above, .btn-rivet 'Start your pair [ → ]' bottom-right, dashed thread running down the centre as scroll cue. Not centred-form style.
 - Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
 - Buttons (.btn): 1px Bone outline, no radius, Plex Mono uppercase, 48px tall. .btn-rivet for booking.

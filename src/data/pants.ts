@@ -51,11 +51,17 @@ export const pants: Pant[] = [
     ],
   },
   {
-    no: '14', label: 'Pant', date: '08.01.26', credit: 'res-res',
+    no: '14', label: 'Pant', credit: 'res-res',
     cover: '/images/pant-14-back.webp',
     photos: [
       { src: '/images/pant-14-back.webp', w: 2000, h: 2000, caption: '14 oz vintage Japanese selvedge', alt: 'Raw indigo jeans from the back, near-black waistband, leather patch and white free-hand embroidery on both back pockets' },
-      { src: '/images/pant-14-pocket.webp', w: 2000, h: 800, caption: 'Copper topstitching · freehand loops', alt: 'Close-up of a back pocket: copper topstitching and a white free-hand embroidered line of loops' },
+    ],
+  },
+  // TODO: which pair number is this? Set `no` once known.
+  {
+    no: '—', label: 'Pant',
+    photos: [
+      { src: '/images/work-turnups.webp', w: 1500, h: 2000, caption: 'Selvedge turn-ups · white topstitching', alt: 'Wide dark jeans worn on the street, from the back: white topstitched pocket design and deep turn-ups showing the selvedge' },
     ],
   },
   { no: '15', label: 'Pant', date: '19.02.26', credit: 'Dublon' },
