@@ -25,6 +25,9 @@
 
 @layer base {
   html {
+    /* The site is dark by design: tell the browser, so it never auto-darkens or re-colours it. */
+    color-scheme: dark;
+    forced-color-adjust: none;
     background: var(--color-void);
     color: var(--color-bone);
     -webkit-text-size-adjust: 100%;
