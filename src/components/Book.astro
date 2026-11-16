@@ -1,5 +1,7 @@
 ---
 // One way to book: a fitting at the studio, through one Cal.com event (see `booking` in src/data/site.ts).
+// With a calLink, the Cal.com calendar is embedded right here: pick a time → booking questions → 250 kr deposit (Stripe).
+// Without one, a single button asks on Instagram instead.
 import Stitch from './Stitch.astro';
 import { site, booking } from '../data/site';
 const fallback = site.instagram || (site.email ? `mailto:${site.email}` : '');
@@ -24,22 +26,31 @@ const pad = (n: number) => String(n).padStart(2, '0');
       ))}
     </ol>
 
-    <div class="mt-12 flex flex-col gap-4 md:mt-16 md:flex-row md:items-center md:gap-8" data-reveal>
-      {booking.calLink ? (
-        <button type="button" class="btn btn-rivet w-full justify-between md:w-[340px]"
-          data-cal-link={booking.calLink} data-cal-namespace={booking.id}
-          data-cal-config='{"theme":"dark","layout":"month_view"}'>
-          Book a fitting <span aria-hidden="true">[ → ]</span>
-        </button>
-      ) : fallback ? (
-        <a href={fallback} class="btn btn-rivet w-full justify-between md:w-[340px]">
-          Book a fitting <span aria-hidden="true">[ → ]</span>
-        </a>
-      ) : (
-        <span class="btn w-full cursor-default opacity-50 md:w-[340px]" aria-disabled="true">Booking opens soon</span>
-      )}
-      <p class="label text-ash">{booking.length} · {booking.where} · {site.deposit} deposit, fully refundable</p>
-    </div>
+    {booking.calLink ? (
+      <div class="mt-12 md:mt-16">
+        <p class="label mb-4 text-ash">{booking.length} · {booking.where} · {site.deposit} deposit, fully refundable</p>
+        <!-- Cal.com calendar, embedded inline. The link below is the fallback if the embed can't load. -->
+        <div id="cal-inline" class="min-h-[640px] w-full" data-cal-inline={booking.calLink}>
+          <noscript>
+            <a class="btn btn-rivet m-6" href={`https://cal.com/${booking.calLink}`}>Start your pair <span aria-hidden="true">[ → ]</span></a>
+          </noscript>
+        </div>
+        <p class="label mt-4 text-ash">
+          Calendar not showing? <a class="text-white underline underline-offset-4 hover:text-rivet" href={`https://cal.com/${booking.calLink}`} target="_blank" rel="noopener">Book on Cal.com</a>
+        </p>
+      </div>
+    ) : (
+      <div class="mt-12 flex flex-col gap-4 md:mt-16 md:flex-row md:items-center md:gap-8" data-reveal>
+        {fallback ? (
+          <a href={fallback} data-book-start class="btn btn-rivet w-full justify-between md:w-[340px]">
+            Start your pair <span aria-hidden="true">[ → ]</span>
+          </a>
+        ) : (
+          <span class="btn w-full cursor-default opacity-50 md:w-[340px]" aria-disabled="true">Booking opens soon</span>
+        )}
+        <p class="label text-ash">{booking.length} · {booking.where} · {site.deposit} deposit, fully refundable</p>
+      </div>
+    )}
 
     <div class="mt-20 grid gap-8 border-t border-bone/15 pt-10 md:grid-cols-3" data-reveal>
       <div><p class="label text-ash">Studio</p><p class="mt-2">{site.address}<br />{site.city}</p></div>
@@ -51,9 +62,31 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 {booking.calLink && (
   <script is:inline data-cal-id={booking.id}>
-    (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
-    const id = document.currentScript.dataset.calId;
-    Cal("init", id, { origin: "https://cal.com" });
-    Cal.ns[id]("ui", { theme: "dark", cssVarsPerTheme: { dark: { "cal-brand": "#B4733A" } }, hideEventTypeDetails: false, layout: "month_view" });
+    (function () {
+      // Load the Cal.com embed only when the booking section comes near the screen.
+      var el = document.getElementById('cal-inline');
+      var id = document.currentScript.dataset.calId;
+      function load() {
+        (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, ["initNamespace", namespace]); } else p(cal, ar); return; } p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
+        Cal("init", id, { origin: "https://cal.com" });
+        Cal.ns[id]("inline", { elementOrSelector: "#cal-inline", calLink: el.dataset.calInline, layout: "month_view", config: { layout: "month_view", theme: "dark" } });
+        // Site palette (DESIGN.md) mapped onto Cal.com's theme variables. Fonts and layout inside the iframe are Cal.com's own.
+        Cal.ns[id]("ui", {
+          theme: "dark", hideEventTypeDetails: false, layout: "month_view",
+          styles: { body: { background: "transparent" } },
+          cssVarsPerTheme: { light: palette, dark: palette }
+        });
+      }
+      var palette = {
+            "cal-brand": "#B4733A", "cal-brand-emphasis": "#C9844A", "cal-brand-text": "#0B0B0A",
+            "cal-bg": "#161614", "cal-bg-muted": "#161614", "cal-bg-subtle": "#1C171A", "cal-bg-emphasis": "#232320",
+            "cal-text": "#E8E3D8", "cal-text-emphasis": "#FFFFFF", "cal-text-subtle": "#8C877D", "cal-text-muted": "#8C877D",
+            "cal-border": "rgba(232,227,216,0.15)", "cal-border-subtle": "rgba(232,227,216,0.1)", "cal-border-emphasis": "rgba(232,227,216,0.3)",
+            "cal-border-booker": "rgba(232,227,216,0.15)"
+      };
+      if (!('IntersectionObserver' in window)) return load();
+      var io = new IntersectionObserver(function (es) { if (es[0].isIntersecting) { io.disconnect(); load(); } }, { rootMargin: '600px' });
+      io.observe(el);
+    })();
   </script>
 )}

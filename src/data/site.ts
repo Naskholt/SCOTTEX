@@ -39,3 +39,18 @@ export const booking = {
     { t: 'Confirm', d: `A ${site.deposit} deposit holds your time. It is fully refundable.` },
   ],
 };
+
+// Booking TEST (fake-door), only on /test — the link the student team shares. Nothing is booked or paid there.
+// See tools/booking-test/README.md for the Google Sheet setup.
+export const bookingTest = {
+  // Google Apps Script web app URL (ends in /exec). Empty = the test still works but records nothing.
+  sheetUrl: '',
+  team: 'Group 6',
+  school: 'EK',
+  // An email people can write to about their data. TODO: fill in before sharing the link.
+  contact: '',
+  times: ['10:00', '12:00', '14:00', '16:00'],
+  matters: ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'],
+  budget: ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'],
+  stoppedBy: ['The deposit', 'Too early for me', "I'd rather just drop by", 'Paying before we meet', 'Something else'],
+};

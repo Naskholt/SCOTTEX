@@ -21,6 +21,7 @@ npm run build    # production build into dist/
 | Process steps | `src/components/Process.astro` |
 | Colours and fonts | `src/styles/global.css` (tokens from `DESIGN.md`) |
 | Animation | `src/scripts/motion.ts` |
+| Booking test (fake-door, only on `/test`) | `src/components/BookingTest.astro`, settings in `src/data/site.ts` → `bookingTest`, Sheet setup in `tools/booking-test/README.md` |
 
 ## Still to do
 
@@ -31,4 +32,5 @@ npm run build    # production build into dist/
 - [ ] Logo file: save it as `public/images/logo.svg` or `logo.png` (picked up automatically)
 - [ ] Ask Benjamin which client names may be shown (`showCredit: true`)
 - [ ] Benjamin reads and corrects the Story and Process text
+- [ ] Booking test: make the Google Sheet (tools/booking-test/README.md), paste the URL + a contact email into `bookingTest` in `src/data/site.ts`
 - [ ] Deploy on Vercel

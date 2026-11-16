@@ -31,7 +31,7 @@ Fonts are self-hosted via @fontsource (see src/styles/global.css).
 - Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right, all Bone. Always visible, always transparent (no background).
 - Front fold copy is Benjamin's own ("Cut for your body. Sewn by hand in Nørrebro."), never the other group's wording.
 - Book: ONE booking button. Three steps: find a time → booking questions (what matters, budget, name, email) → 250 kr refundable deposit. All in one Cal.com event.
-- Front fold: B/W sewing machine photo (public/images/hero.webp) fading to black, stitched logo centred at ~24% height. Split base: Garamond italic line bottom-left with a mono label above, .btn-rivet 'Book a fitting [ → ]' bottom-right, dashed thread running down the centre as scroll cue. Not centred-form style.
+- Front fold: B/W sewing machine photo (public/images/hero.webp) fading to black, stitched logo centred at ~24% height. Split base: Garamond italic line bottom-left with a mono label above, .btn-rivet 'Start your pair [ → ]' bottom-right, dashed thread running down the centre as scroll cue. Not centred-form style.
 - Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
 - Buttons (.btn): 1px Bone outline, no radius, Plex Mono uppercase, 48px tall. .btn-rivet for booking.
 - Chapter marker: "01 — STORY" in Plex Mono, Ash, top-left of each section.

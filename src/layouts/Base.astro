@@ -2,10 +2,11 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import { site } from '../data/site';
-interface Props { title?: string; description?: string }
+interface Props { title?: string; description?: string; noindex?: boolean }
 const {
   title = 'SCOTTEX — Custom jeans, made by hand in Nørrebro',
-  description = 'Custom-fit jeans made by hand by Benjamin in Nørrebro, Copenhagen. Japanese and Italian surplus denim, free-hand embroidery, free repairs. Book a fitting.',
+  noindex = false,
+  description = 'Custom-fit jeans made by hand by Benjamin in Nørrebro, Copenhagen. Japanese and Italian surplus denim, free-hand embroidery, free repairs. Start your pair with a fitting in the studio.',
 } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ld = {
@@ -28,6 +29,7 @@ const ld = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:title" content={title} />
