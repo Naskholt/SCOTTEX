@@ -13,7 +13,7 @@ Visitors then choose **Keep my answer** or **Delete my details**. "Not now" asks
 3. In the bar at the top, pick the function **`setup`** and press **Run**.
    Google asks for permission: **Review permissions** → pick your account → **Advanced** →
    **Go to … (unsafe)** → **Allow**. (It says "unsafe" because you wrote the script yourself; it only touches this sheet.)
-   Back in the sheet you now have two tabs: **Summary** and **Events**.
+   Back in the sheet you now have four tabs: **Summary**, **People**, **How to use** and **Events**.
 4. **Deploy → New deployment** → the gear ⚙ → **Web app**.
    - Description: anything, e.g. "v1"
    - Execute as: **Me**
@@ -24,7 +24,7 @@ Visitors then choose **Keep my answer** or **Delete my details**. "Not now" asks
    (an email people can write to about their data). Rebuild and deploy.
 
 If you change the script later: **Deploy → Manage deployments → ✏️ edit → Version: New version → Deploy**, or the old code keeps running.
-To rebuild the Summary tab (e.g. after changing the answer options), run `setup` again; the Events rows are kept.
+To rebuild or restyle the tabs (e.g. after changing the answer options), run `setup` again; the Events rows are kept.
 
 ### The Summary tab
 
@@ -35,7 +35,8 @@ Updates by itself. It shows:
 - **Why they tried to leave** (the "Before you go" pop-up), split by who stayed and who left.
 - **What stopped them** after "Not now", and **the step where they left**.
 - **Where visitors came from** (the `?utm_source=` tag) and phone/computer.
-- On the right: the **newsletter emails** and the people who **kept their answer** (name, email, day, time, budget).
+The **People** tab lists the **newsletter emails** and the people who **kept their answer** (name, email, day, time, budget).
+It's personal data: don't share that tab.
 
 ## 2. What gets recorded
 

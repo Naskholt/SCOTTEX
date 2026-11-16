@@ -4,21 +4,48 @@
  * then Deploy → New deployment → Web app (Execute as: Me · Who has access: Anyone).
  * Copy the /exec URL into bookingTest.sheetUrl in src/data/site.ts.
  *
- * Every event from the site becomes one row in the "Events" tab.
- * The "Summary" tab adds it all up with formulas, so it updates by itself.
+ * Tabs (setup makes and styles them; running it again keeps every row in Events):
+ *   Summary    — the results, all formulas, updates by itself
+ *   People     — names and emails (would-book + newsletter). Personal data: don't share this tab.
+ *   How to use — notes for the group
+ *   Events     — one row per click on the site (raw data)
  * Name and email only arrive with the "keep" event (the visitor pressed "Keep my answer"),
  * and an email with "newsletter" (someone signed up in the hero).
  */
 const SHEET_NAME = 'Events';
 const SUMMARY_NAME = 'Summary';
+const PEOPLE_NAME = 'People';
+const GUIDE_NAME = 'How to use';
+const SITE = 'https://scottex-ek.netlify.app/';
+
 // A received · B event · C visitor · D step · E day · F time · G matters · H budget · I reason
 // J name · K email · L utm_source · M utm_medium · N utm_campaign · O referrer · P device
 const COLUMNS = [
   'received', 'event', 'visitor', 'step', 'day', 'time', 'matters', 'budget', 'reason',
   'name', 'email', 'utm_source', 'utm_medium', 'utm_campaign', 'referrer', 'device',
 ];
-// Keep in sync with bookingTest.matters in src/data/site.ts.
+
+// Answer options. Keep in sync with bookingTest in src/data/site.ts.
 const MATTERS = ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'];
+const BUDGETS = ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'];
+const EXIT_REASONS = ['Just looking around', 'The deposit', 'Not the right time', "I'd rather just drop by", 'Something else'];
+const STOPPED_BY = ['The deposit', 'Too early for me', "I'd rather just drop by", 'Paying before we meet', 'Something else'];
+const STEPS = [['time', '1 · Find a time'], ['about', '2 · Tell me about you'], ['confirm', '3 · Confirm (deposit)']];
+// Where links are shared: the ?utm_source= tag and a name for it.
+const SOURCES = [
+  ['ig', 'Instagram (bio, story, DM)'],
+  ['tiktok', 'TikTok'],
+  ['qr', 'Printed QR code (poster, flyer, in the shop)'],
+  ['class', 'Messenger / class group chat'],
+];
+
+// Scottex colours.
+const C = {
+  ink: '#0b0b0a', bone: '#e8e3d8', ash: '#8c877d', text: '#2b2925',
+  rivet: '#b4733a', rivetSoft: '#f6ebe0', band: '#f3f0e8', line: '#e3ded3', white: '#ffffff',
+};
+
+// ---------------------------------------------------------------- receiving rows
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -41,10 +68,19 @@ function doGet() {
   return ContentService.createTextOutput('Scottex booking test is listening.');
 }
 
-// Run once from the editor (select "setup" → Run). Makes both tabs and asks for permission.
+// Run from the editor (select "setup" → Run). Makes and styles every tab. Events rows are kept.
 function setup() {
   getSheet_();
+  styleEvents_();
   buildSummary_();
+  buildPeople_();
+  buildGuide_();
+  // Remove the empty tab a new spreadsheet starts with ("Sheet1", or "Ark 1" in Danish).
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  ss.getSheets().forEach((sh) => {
+    if (/^(Sheet|Ark|Blad)\s?1$/.test(sh.getName()) && sh.getLastRow() === 0 && ss.getNumSheets() > 1) ss.deleteSheet(sh);
+  });
+  ss.setActiveSheet(sheet_(SUMMARY_NAME, 0));
 }
 
 function getSheet_() {
@@ -53,30 +89,108 @@ function getSheet_() {
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   if (sheet.getLastRow() === 0) {
     sheet.appendRow(COLUMNS);
-    sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold');
+    styleEvents_();
   }
-  if (!ss.getSheetByName(SUMMARY_NAME)) buildSummary_();
+  if (!ss.getSheetByName(SUMMARY_NAME)) { buildSummary_(); buildPeople_(); }
   return sheet;
 }
 
-// The Summary tab: only formulas, so it always reflects the Events tab.
-function buildSummary_() {
+// ---------------------------------------------------------------- helpers
+
+// Get (or make) a tab and put it at position `index` (0 = first).
+function sheet_(name, index) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let s = ss.getSheetByName(SUMMARY_NAME);
-  if (s) s.clear(); else s = ss.insertSheet(SUMMARY_NAME, 0);
+  let s = ss.getSheetByName(name);
+  if (!s) s = ss.insertSheet(name);
+  ss.setActiveSheet(s);
+  ss.moveActiveSheet(Math.min(index, ss.getNumSheets() - 1) + 1);
+  return s;
+}
+
+// Wipe a tab's content and formatting (used for the tabs that are only formulas or notes).
+function reset_(s) {
+  s.getRange(1, 1, s.getMaxRows(), s.getMaxColumns()).breakApart();
+  s.clear();
+  s.getBandings().forEach((b) => b.remove());
+  s.setHiddenGridlines(true);
+  s.setFrozenRows(0);
+  s.getRange(1, 1, s.getMaxRows(), s.getMaxColumns()).setFontFamily('Arial').setFontColor(C.text).setVerticalAlignment('middle');
+}
+
+// Black title bar across the top, with a grey line under it.
+function title_(s, lastCol, text, sub) {
+  s.getRange(1, 1, 1, lastCol).setBackground(C.ink);
+  s.getRange(1, 2, 1, lastCol - 1).merge().setValue(text)
+    .setFontColor(C.bone).setFontSize(18).setFontWeight('bold');
+  s.setRowHeight(1, 52);
+  const r = s.getRange(2, 2, 1, lastCol - 1).merge();
+  if (String(sub).charAt(0) === '=') r.setFormula(sub); else r.setValue(sub);
+  r.setFontColor(C.ash).setFontStyle('italic');
+  s.setRowHeight(2, 30);
+  s.setColumnWidth(1, 18);
+}
+
+// Black section bar.
+function section_(s, row, col, width, text) {
+  s.getRange(row, col, 1, width).merge().setValue(text.toUpperCase())
+    .setBackground(C.ink).setFontColor(C.bone).setFontWeight('bold').setFontSize(10);
+  s.setRowHeight(row, 30);
+}
+
+// Light table header row.
+function th_(s, row, col, labels) {
+  s.getRange(row, col, 1, labels.length).setValues([labels])
+    .setBackground(C.band).setFontWeight('bold').setFontSize(10).setFontColor(C.text);
+}
+
+// Thin lines between table rows.
+function lines_(s, row, col, nRows, nCols) {
+  s.getRange(row, col, nRows, nCols)
+    .setBorder(null, null, true, null, null, true, C.line, SpreadsheetApp.BorderStyle.SOLID);
+}
+
+// ---------------------------------------------------------------- Summary
+
+function buildSummary_() {
+  const s = sheet_(SUMMARY_NAME, 0);
+  reset_(s);
+  s.setTabColor(C.rivet);
   const E = SHEET_NAME + '!';
   const uniq = (ev) => `=IFERROR(COUNTUNIQUE(FILTER(${E}C2:C, ${E}B2:B="${ev}")), 0)`;
-  const rows = (ev) => `=COUNTIF(${E}B2:B, "${ev}")`;
-  const q = (sql) => `=IFERROR(QUERY(${E}A2:P, "${sql}", 0), "Nothing yet")`;
-  const head = (r, c, text) => s.getRange(r, c).setValue(text).setFontWeight('bold').setFontSize(12);
+  const count = (ev) => `=COUNTIF(${E}B2:B, "${ev}")`;
+  const share = (r, of) => `=IF($C$${of}=0, "", C${r}/$C$${of})`;
 
-  // 1. Funnel: unique visitors at each step, and the share of those who opened the booking.
-  head(1, 1, 'Funnel (unique visitors)');
-  s.getRange(2, 1, 1, 3).setValues([['Step', 'People', 'Of those who pressed Start your pair']]).setFontWeight('bold');
+  // Column grid: A margin · B-D left block · E gap · F-H right block.
+  s.setColumnWidth(2, 330); s.setColumnWidth(3, 90); s.setColumnWidth(4, 150);
+  s.setColumnWidth(5, 36);
+  s.setColumnWidth(6, 260); s.setColumnWidth(7, 90); s.setColumnWidth(8, 90);
+
+  title_(s, 8, 'SCOTTEX · Booking test results',
+    `=IF(COUNTA(${E}B2:B)=0, "No visits yet. This tab fills in by itself.", "Updates by itself · last activity "&TEXT(MAX(${E}A2:A), "d mmm yyyy, hh:mm"))`);
+
+  // Key numbers.
+  const OPEN = 11, DETAILS = 13, PAY = 14; // rows in the funnel table below
+  s.getRange(4, 2, 2, 3).setBackground(C.band);
+  s.getRange(4, 6, 2, 3).setBackground(C.rivetSoft);
+  s.getRange(4, 2).setValue('VISITORS');
+  s.getRange(5, 2).setFormula(uniq('view'));
+  s.getRange(4, 3, 1, 2).merge().setValue('PRESSED "START YOUR PAIR"');
+  s.getRange(5, 3, 1, 2).merge().setFormula(uniq('open'));
+  s.getRange(4, 6).setValue('WOULD PAY THE 250 KR DEPOSIT');
+  s.getRange(5, 6).setFormula(`=IF(C${OPEN}=0, "–", C${PAY}/C${OPEN})`).setNumberFormat('0%').setFontColor(C.rivet);
+  s.getRange(4, 7, 1, 2).merge().setValue('NEWSLETTER');
+  s.getRange(5, 7, 1, 2).merge().setFormula(count('newsletter'));
+  s.getRange(4, 2, 1, 7).setFontSize(9).setFontColor(C.ash).setFontWeight('bold').setVerticalAlignment('bottom');
+  s.getRange(5, 2, 1, 7).setFontSize(24).setFontWeight('bold').setHorizontalAlignment('left').setVerticalAlignment('top');
+  s.getRange(5, 6).setFontColor(C.rivet);
+  s.setRowHeight(4, 26); s.setRowHeight(5, 46);
+
+  // Left · Funnel.
+  section_(s, 7, 2, 3, 'Funnel · unique visitors');
+  th_(s, 8, 2, ['Step', 'People', 'Of "Start your pair"']);
   const funnel = [
     ['Visited the site', uniq('view')],
-    ['Signed up for the newsletter', rows('newsletter')],
+    ['Signed up for the newsletter', count('newsletter')],
     ['Pressed "Start your pair"', uniq('open')],
     ['Picked a day and time', uniq('time_picked')],
     ['Answered budget + what matters', uniq('details_done')],
@@ -84,55 +198,219 @@ function buildSummary_() {
     ['Kept their answer (left name + email)', uniq('keep')],
     ['Deleted their details', uniq('declined')],
     ['Pressed "Not now" on the deposit step', uniq('not_now')],
-    ['Tried to close before confirming (got "Before you go")', uniq('exit_prompt')],
-    ['…then pressed "Continue booking"', uniq('exit_continue')],
-    ['…then pressed "Leave anyway"', uniq('exit_leave')],
+    ['Tried to close before confirming', uniq('exit_prompt')],
+    ['   …then pressed "Continue booking"', uniq('exit_continue')],
+    ['   …then pressed "Leave anyway"', uniq('exit_leave')],
   ];
   funnel.forEach(([label, f], i) => {
-    const r = 3 + i;
-    s.getRange(r, 1).setValue(label);
-    s.getRange(r, 2).setFormula(f);
-    if (i >= 3) s.getRange(r, 3).setFormula(`=IF($B$5=0, "", B${r}/$B$5)`).setNumberFormat('0%');
+    const r = 9 + i;
+    s.getRange(r, 2).setValue(label);
+    s.getRange(r, 3).setFormula(f);
+    if (i >= 3) s.getRange(r, 4).setFormula(share(r, OPEN));
   });
+  lines_(s, 9, 2, funnel.length, 3);
+  s.getRange(PAY, 2, 1, 3).setBackground(C.rivetSoft).setFontWeight('bold').setFontColor(C.rivet);
 
-  // 2. Budget.
-  head(17, 1, 'Budget (from "Tell me about you")');
-  s.getRange(18, 1).setFormula(q("select H, count(C) where B = 'details_done' and H <> '' group by H order by count(C) desc label H 'Budget', count(C) 'People'"));
-
-  // 3. What matters (people can pick several, so each option is counted on its own).
-  head(26, 1, 'What matters to them (pick any)');
-  s.getRange(27, 1, 1, 2).setValues([['Answer', 'People']]).setFontWeight('bold');
+  // Left · What matters.
+  section_(s, 23, 2, 3, 'What matters to them · pick any');
+  th_(s, 24, 2, ['Answer', 'People', 'Of those who answered']);
   MATTERS.forEach((m, i) => {
-    s.getRange(28 + i, 1).setValue(m);
-    s.getRange(28 + i, 2).setFormula(`=COUNTIFS(${E}B2:B, "details_done", ${E}G2:G, "*${m}*")`);
+    const r = 25 + i;
+    s.getRange(r, 2).setValue(m);
+    s.getRange(r, 3).setFormula(`=COUNTIFS(${E}B2:B, "details_done", ${E}G2:G, "*${m}*")`);
+    s.getRange(r, 4).setFormula(share(r, DETAILS));
   });
+  lines_(s, 25, 2, MATTERS.length, 3);
 
-  // 4. Why people closed the booking: the "Before you go" pop-up, split by stayed / left.
-  head(36, 1, 'Why they tried to leave ("Before you go" pop-up)');
-  s.getRange(37, 1).setFormula(q("select I, count(C) where (B = 'exit_leave' or B = 'exit_continue') and I <> '' group by I pivot B label I 'Reason'"));
+  // Left · Budget.
+  section_(s, 33, 2, 3, 'Budget for one pair');
+  th_(s, 34, 2, ['Budget', 'People', 'Of those who answered']);
+  BUDGETS.forEach((b, i) => {
+    const r = 35 + i;
+    s.getRange(r, 2).setValue(b);
+    s.getRange(r, 3).setFormula(`=COUNTIFS(${E}B2:B, "details_done", ${E}H2:H, "${b}")`);
+    s.getRange(r, 4).setFormula(share(r, DETAILS));
+  });
+  lines_(s, 35, 2, BUDGETS.length, 3);
 
-  // 5. What stopped them after "Not now".
-  head(45, 1, 'What stopped them (after "Not now")');
-  s.getRange(46, 1).setFormula(q("select I, count(C) where B = 'reason' and I <> '' group by I order by count(C) desc label I 'Reason', count(C) 'People'"));
+  // Right · Why they tried to leave ("Before you go" pop-up).
+  section_(s, 7, 6, 3, 'Why they tried to leave · "Before you go"');
+  th_(s, 8, 6, ['Reason', 'Stayed', 'Left']);
+  [...EXIT_REASONS, '(no reason picked)'].forEach((reason, i) => {
+    const r = 9 + i;
+    const crit = reason.charAt(0) === '(' ? '""' : `"${reason.replace(/"/g, '""')}"`;
+    s.getRange(r, 6).setValue(reason);
+    s.getRange(r, 7).setFormula(`=COUNTIFS(${E}B2:B, "exit_continue", ${E}I2:I, ${crit})`);
+    s.getRange(r, 8).setFormula(`=COUNTIFS(${E}B2:B, "exit_leave", ${E}I2:I, ${crit})`);
+  });
+  lines_(s, 9, 6, EXIT_REASONS.length + 1, 3);
 
-  // 6. At which step people left the booking.
-  head(54, 1, 'Step where they left');
-  s.getRange(55, 1).setFormula(q("select D, count(C) where B = 'exit_leave' or B = 'close' group by D label D 'Step', count(C) 'Times'"));
+  // Right · What stopped them after "Not now".
+  section_(s, 17, 6, 3, 'What stopped them · after "Not now"');
+  th_(s, 18, 6, ['Reason', 'People', '']);
+  STOPPED_BY.forEach((reason, i) => {
+    const r = 19 + i;
+    s.getRange(r, 6).setValue(reason);
+    s.getRange(r, 7).setFormula(`=COUNTIFS(${E}B2:B, "reason", ${E}I2:I, "${reason.replace(/"/g, '""')}")`);
+  });
+  lines_(s, 19, 6, STOPPED_BY.length, 3);
 
-  // 7. Where visitors came from (the ?utm_source= tag on the link you shared) and their device.
-  head(62, 1, 'Where visitors came from');
-  s.getRange(63, 1).setFormula(q("select L, P, count(C) where B = 'view' group by L, P label L 'Source (empty = direct)', P 'Device', count(C) 'Visits'"));
+  // Right · Step where they left.
+  section_(s, 26, 6, 3, 'Step where they left');
+  th_(s, 27, 6, ['Step', 'Left there', '']);
+  STEPS.forEach(([step, label], i) => {
+    const r = 28 + i;
+    s.getRange(r, 6).setValue(label);
+    s.getRange(r, 7).setFormula(`=COUNTIFS(${E}B2:B, "exit_leave", ${E}D2:D, "${step}")`);
+  });
+  lines_(s, 28, 6, STEPS.length, 3);
 
-  // Lists on the right: newsletter emails and the people who kept their booking answer.
-  head(1, 6, 'Newsletter sign-ups');
-  s.getRange(2, 6).setFormula(q("select A, K where B = 'newsletter' order by A desc label A 'When', K 'Email'"));
-  head(1, 9, 'Kept their answer (would book)');
-  s.getRange(2, 9).setFormula(q("select A, J, K, E, F, H, G where B = 'keep' order by A desc label A 'When', J 'Name', K 'Email', E 'Day', F 'Time', H 'Budget', G 'What matters'"));
+  // Right · Where visitors came from (the ?utm_source= tag on the shared link). Every channel is always listed.
+  section_(s, 33, 6, 3, 'Where visitors came from');
+  th_(s, 34, 6, ['Channel', 'Visits', 'On a phone']);
+  const src = [...SOURCES.map(([tag, name]) => [name, `"${tag}"`]), ['No tag (typed the address)', '""'], ['Tests (delete these)', '"test"']];
+  src.forEach(([name, crit], i) => {
+    const r = 35 + i;
+    s.getRange(r, 6).setValue(name);
+    s.getRange(r, 7).setFormula(`=COUNTIFS(${E}B2:B, "view", ${E}L2:L, ${crit})`);
+    s.getRange(r, 8).setFormula(`=COUNTIFS(${E}B2:B, "view", ${E}L2:L, ${crit}, ${E}P2:P, "phone")`);
+  });
+  const other = 35 + src.length;
+  s.getRange(other, 6).setValue('Other tags');
+  s.getRange(other, 7).setFormula(`=COUNTIF(${E}B2:B, "view") - SUM(G35:G${other - 1})`);
+  s.getRange(other, 8).setFormula(`=COUNTIFS(${E}B2:B, "view", ${E}P2:P, "phone") - SUM(H35:H${other - 1})`);
+  s.getRange(other - 1, 6, 1, 3).setFontColor(C.ash);
+  lines_(s, 35, 6, src.length + 1, 3);
 
-  s.setColumnWidth(1, 380);
-  s.setColumnWidths(2, 2, 120);
-  s.setColumnWidth(3, 230);
-  s.setFrozenRows(0);
+  // Full width · the link to share for each channel.
+  const L0 = other + 3;
+  section_(s, L0, 2, 7, 'Links to share · one per channel');
+  th_(s, L0 + 1, 2, ['Channel', 'Link', '', '', '', '', '']);
+  s.getRange(L0 + 1, 3, 1, 6).merge();
+  SOURCES.forEach(([tag, name], i) => {
+    const r = L0 + 2 + i;
+    s.getRange(r, 2).setValue(name);
+    s.getRange(r, 3, 1, 6).merge().setValue(SITE + '?utm_source=' + tag).setFontFamily('Roboto Mono').setFontSize(10);
+  });
+  const any = L0 + 2 + SOURCES.length;
+  s.getRange(any, 2).setValue('Anything else');
+  s.getRange(any, 3, 1, 6).merge().setValue(SITE + '?utm_source=yourword   (one word, no spaces)')
+    .setFontFamily('Roboto Mono').setFontSize(10).setFontColor(C.ash);
+  lines_(s, L0 + 2, 2, SOURCES.length + 1, 7);
+
+  // Numbers: centred; shares as %.
+  [[9, 3, 34], [9, 7, 36]].forEach(([r, c, n]) => s.getRange(r, c, n, 2).setHorizontalAlignment('center'));
+  s.getRange(9, 4, 30, 1).setNumberFormat('0%');
+  s.getRange(8, 3, 1, 2).setHorizontalAlignment('center');
+  s.getRange(4, 2, 2, 7).setHorizontalAlignment('left');
+}
+
+// ---------------------------------------------------------------- People (personal data)
+
+function buildPeople_() {
+  const s = sheet_(PEOPLE_NAME, 1);
+  reset_(s);
+  s.setTabColor(C.ink);
+  const E = SHEET_NAME + '!';
+  // A margin · B-H would book · I gap · J-K newsletter
+  [[2, 140], [3, 150], [4, 220], [5, 110], [6, 70], [7, 130], [8, 260], [9, 36], [10, 140], [11, 240]]
+    .forEach(([c, w]) => s.setColumnWidth(c, w));
+  title_(s, 11, 'SCOTTEX · People', 'Real names and emails. Don\'t share this tab, and delete the sheet when the project ends.');
+
+  section_(s, 4, 2, 7, 'Would book · kept their answer');
+  s.getRange(5, 2).setFormula(`=IFERROR(QUERY(${E}A2:P, "select A, J, K, E, F, H, G where B = 'keep' order by A desc label A 'When', J 'Name', K 'Email', E 'Day', F 'Time', H 'Budget', G 'What matters'", 0), "Nobody yet")`);
+  s.getRange(5, 2, 1, 7).setBackground(C.band).setFontWeight('bold').setFontSize(10);
+  s.getRange(6, 2, 300, 1).setNumberFormat('d mmm, hh:mm');
+  lines_(s, 6, 2, 40, 7);
+
+  section_(s, 4, 10, 2, 'Newsletter sign-ups');
+  s.getRange(5, 10).setFormula(`=IFERROR(QUERY(${E}A2:P, "select A, K where B = 'newsletter' order by A desc label A 'When', K 'Email'", 0), "Nobody yet")`);
+  s.getRange(5, 10, 1, 2).setBackground(C.band).setFontWeight('bold').setFontSize(10);
+  s.getRange(6, 10, 300, 1).setNumberFormat('d mmm, hh:mm');
+  lines_(s, 6, 10, 40, 2);
+}
+
+// ---------------------------------------------------------------- How to use
+
+function buildGuide_() {
+  const g = sheet_(GUIDE_NAME, 2);
+  reset_(g);
+  g.setTabColor(C.ash);
+  g.setColumnWidth(2, 300);
+  g.setColumnWidth(3, 600);
+  title_(g, 3, 'SCOTTEX · How to use this sheet', 'Notes for the group.');
+
+  const note = (row, text) => g.getRange(row, 2, 1, 2).merge().setValue(text).setWrap(true).setFontColor(C.text);
+  const pairs = (row, list) => {
+    g.getRange(row, 2, list.length, 2).setValues(list).setWrap(true).setVerticalAlignment('top');
+    g.getRange(row, 2, list.length, 1).setFontWeight('bold');
+    lines_(g, row, 2, list.length, 2);
+  };
+
+  section_(g, 4, 2, 2, '1 · Share a different link for each place');
+  note(5, 'Everyone lands on the same site. The part after ?utm_source= is a label that gets saved, so the Summary tab can show where visitors came from. The same links are at the bottom of the Summary tab.');
+  g.setRowHeight(5, 44);
+  th_(g, 6, 2, ['Where you share it', 'Link to use']);
+  const links = [
+    ...SOURCES.map(([tag, name]) => [name, SITE + '?utm_source=' + tag]),
+    ['Anything else', SITE + '?utm_source=yourword   (one word, no spaces)'],
+  ];
+  g.getRange(7, 2, links.length, 2).setValues(links);
+  g.getRange(7, 3, links.length, 1).setFontFamily('Roboto Mono').setFontSize(10);
+  lines_(g, 7, 2, links.length, 2);
+
+  section_(g, 13, 2, 2, '2 · Delete test rows before sharing');
+  note(14, 'Test visits are counted like real ones. Rows with "test" in the utm_source column are tests.');
+  pairs(15, [
+    ['How', 'Events tab → click the first test row number → hold Shift → click the last → right-click → Delete rows.'],
+    ['Never delete', 'Row 1 in Events (the column names). The other tabs need it.'],
+  ]);
+  g.getRange(16, 2, 1, 2).setFontColor(C.rivet);
+
+  section_(g, 18, 2, 2, '3 · Reading the results');
+  pairs(19, [
+    ['Summary', 'Updates by itself. Funnel, what matters, budget, why people left, where they came from.'],
+    ['Key number', '"Would pay the 250 kr deposit" at the top = people who pressed Pay ÷ people who pressed "Start your pair".'],
+    ['People', 'Names and emails of people who would book, and newsletter sign-ups. Personal data: don\'t share it.'],
+    ['Events', 'One row per click. The visitor column lets you follow one person through their visit.'],
+  ]);
+
+  section_(g, 24, 2, 2, '4 · When the project ends');
+  note(25, 'Delete this sheet. The privacy note on the site promises it.');
+
+  g.getRange(5, 2, 21, 2).setVerticalAlignment('middle');
+  [7, 8, 9, 10, 11, 15, 16, 19, 20, 21, 22].forEach((r) => g.setRowHeight(r, 30));
+}
+
+// ---------------------------------------------------------------- Events (raw data, never cleared)
+
+function styleEvents_() {
+  const s = sheet_(SHEET_NAME, 3);
+  s.setTabColor('#cfcac0');
+  s.setFrozenRows(1);
+  s.getBandings().forEach((b) => b.remove());
+
+  // Only keep the rows in use (plus one), so the tab doesn't look endless. New visits add rows by themselves.
+  const keep = Math.max(s.getLastRow() + 1, 2);
+  if (s.getMaxRows() > keep) s.deleteRows(keep + 1, s.getMaxRows() - keep);
+  if (s.getMaxColumns() > COLUMNS.length) s.deleteColumns(COLUMNS.length + 1, s.getMaxColumns() - COLUMNS.length);
+
+  // Header.
+  s.getRange(1, 1, 1, COLUMNS.length).setValues([COLUMNS])
+    .setBackground(C.ink).setFontColor(C.bone).setFontWeight('bold');
+  s.setRowHeight(1, 30);
+
+  // Shading on every other row, and readable dates. Open-ended ranges, so new rows get it too.
+  const body = s.getRange('A2:P');
+  s.setConditionalFormatRules([
+    SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND($B2<>"", ISEVEN(ROW()))')
+      .setBackground(C.band).setRanges([body]).build(),
+  ]);
+  s.getRange('A2:A').setNumberFormat('d mmm yyyy, hh:mm:ss');
+
+  const widths = { received: 160, event: 120, visitor: 140, step: 80, day: 100, time: 60, matters: 220, budget: 120,
+    reason: 180, name: 120, email: 200, utm_source: 100, utm_medium: 100, utm_campaign: 110, referrer: 200, device: 80 };
+  COLUMNS.forEach((c, i) => s.setColumnWidth(i + 1, widths[c]));
 }
 
 // Plain text only, short, and never starting with = + - @ (so nothing runs as a formula in the sheet).
