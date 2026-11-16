@@ -17,7 +17,8 @@ export const site = {
   tiktok: '',
   email: '',
   phone: '+45 92 10 20 30', // shown as written; the call link uses the digits only
-  // Newsletter form in the front fold. Paste a form endpoint (e.g. Buttondown, Mailchimp, Formspree) to show it.
+  // Newsletter form in the front fold (always shown). Paste a form endpoint (e.g. Buttondown, Mailchimp, Formspree)
+  // to send sign-ups there; while empty, they go to the booking-test Google Sheet as event "newsletter".
   newsletter: '',
 };
 

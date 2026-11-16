@@ -4,7 +4,8 @@
  * (Execute as: Me · Who has access: Anyone). Copy the /exec URL into bookingTest.sheetUrl in src/data/site.ts.
  *
  * Every event from the booking test on the site becomes one row in the "Events" tab.
- * Name and email only ever arrive with the "keep" event (the visitor pressed "Keep my answer").
+ * Name and email only arrive with the "keep" event (the visitor pressed "Keep my answer"),
+ * and an email with "newsletter" (someone signed up in the hero).
  */
 const SHEET_NAME = 'Events';
 const COLUMNS = [

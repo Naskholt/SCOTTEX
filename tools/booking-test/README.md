@@ -39,6 +39,7 @@ One row per event in the **Events** tab:
 | `exit_continue` | they pressed "Continue booking" in that pop-up (`reason` = what they picked, if anything) |
 | `exit_leave` | they pressed "Leave anyway" (`reason` = what they picked, if anything) |
 | `close` | they closed the panel (`step` says where) |
+| `newsletter` | someone signed up in the hero's "News on new fabrics" field (has their email) |
 
 Each visit has a random `visitor` id (kept in memory only, no cookies), so you can follow one person's path.
 `utm_source` etc. come from the link you share — use a different tag per channel, e.g.
