@@ -20,32 +20,22 @@ export const site = {
   newsletter: '',
 };
 
-// Cal.com: create the three event types, then paste the links (the part after cal.com/).
-// While a link is empty, the card shows "Booking opens soon" and links to Instagram/email instead.
-export const booking = [
-  {
-    id: 'fitting',
-    title: 'Fitting at the studio',
-    length: '60 min',
-    where: 'Nørrebro studio',
-    text: 'Come by the studio. I take your measurements, we talk fit and style, and look at fabric together.',
-    calLink: '', // e.g. 'scottex/fitting'
-  },
-  {
-    id: 'call',
-    title: 'Consultation call',
-    length: '20 min',
-    where: 'Phone or video',
-    text: 'Not ready to visit yet? A short call about what you want and how I work.',
-    calLink: '', // e.g. 'scottex/call'
-  },
-  {
-    id: 'reserve',
-    title: 'Reserve a pair',
-    length: 'Deposit',
-    where: 'Fully refundable',
-    text: 'Hold your place in my queue with a refundable deposit. We book your fitting right after.',
-    calLink: '', // e.g. 'scottex/reserve' (Cal.com event with the Stripe app turned on)
-    primary: true,
-  },
-];
+// Booking: ONE Cal.com event, "Fitting at the studio". The visitor:
+//   1. finds a date and time
+//   2. answers the booking questions (set these in Cal.com → the event → Advanced → Booking questions):
+//      what matters to them in a pair of jeans, their budget, name and email (name + email are built in)
+//   3. pays the deposit (Cal.com → Apps → Stripe, then turn on payment in the event and set 250 DKK).
+//      Refunds are done by hand in Stripe.
+// Paste the link (the part after cal.com/, e.g. 'scottex/fitting'). While it is empty, the button asks on Instagram instead.
+export const booking = {
+  id: 'fitting',
+  title: 'Fitting at the studio',
+  length: '60 min',
+  where: 'Nørrebro studio',
+  calLink: '',
+  steps: [
+    { t: 'Find a time', d: 'Pick a day and a time that suits you.' },
+    { t: 'Tell me about you', d: 'What matters to you in a pair of jeans, your budget, your name and email.' },
+    { t: 'Confirm', d: `A ${site.deposit} deposit holds your time. It is fully refundable.` },
+  ],
+};

@@ -9,10 +9,20 @@ export type Pant = {
   credit?: string;
   showCredit?: boolean;
   cover?: string;
-  photos?: { src: string; w: number; h: number; alt: string }[];
+  // `caption` is the short line shown under the photo in the Work gallery.
+  photos?: { src: string; w: number; h: number; alt: string; caption?: string }[];
 };
 
 export const pants: Pant[] = [
+  // Shown first in the Work gallery. TODO: which pair number is this? Set `no` (and `date`) once known.
+  {
+    no: '—', label: 'Pant',
+    cover: '/images/work-front.webp',
+    photos: [
+      { src: '/images/work-front.webp', w: 1500, h: 2000, caption: 'Raw indigo · wide straight leg', alt: 'Raw indigo jeans from the front, wide straight leg, contrast topstitching and a single metal button' },
+      { src: '/images/work-back.webp', w: 1500, h: 2000, caption: 'Leather patch · freehand pocket embroidery', alt: 'The same jeans from the back: leather patch with the stitched Scottex logo and freehand embroidery on both back pockets' },
+    ],
+  },
   { no: '01', label: 'Jort', },
   { no: '01', label: 'Pant', date: '10.11.24' },
   { no: '02', label: 'Pant', date: '21.12.24', credit: 'Alberto Gallo' },
@@ -27,12 +37,25 @@ export const pants: Pant[] = [
   { no: '11', label: 'Pant', date: '2025', credit: 'Trade with Kaybe Jewelry' },
   { no: '12', label: 'Pant', date: '2026', credit: 'William Claudiust' },
   { no: '13', label: 'Pant', date: '08.01.26', credit: 'Brandspace Studio' },
+  // TODO: which pair numbers are these two? Set `no` once known.
+  {
+    no: '—', label: 'Pant',
+    photos: [
+      { src: '/images/work-street.webp', w: 1050, h: 1400, caption: 'Wide leg · worn in', alt: 'Wide-leg jeans worn on the street with a belt buckle and brown leather shoes' },
+    ],
+  },
+  {
+    no: '—', label: 'Pant',
+    photos: [
+      { src: '/images/work-worn-back.webp', w: 1050, h: 1400, caption: 'Leather patch · red pocket stitching', alt: 'Raw indigo jeans worn, from the back: leather patch on the waistband and red freehand stitching on the back pockets' },
+    ],
+  },
   {
     no: '14', label: 'Pant', date: '08.01.26', credit: 'res-res',
     cover: '/images/pant-14-back.webp',
     photos: [
-      { src: '/images/pant-14-back.webp', w: 2000, h: 2000, alt: 'Raw indigo jeans from the back, near-black waistband, leather patch and white free-hand embroidery on both back pockets' },
-      { src: '/images/pant-14-pocket.webp', w: 2000, h: 800, alt: 'Close-up of a back pocket: copper topstitching and a white free-hand embroidered line of loops' },
+      { src: '/images/pant-14-back.webp', w: 2000, h: 2000, caption: '14 oz vintage Japanese selvedge', alt: 'Raw indigo jeans from the back, near-black waistband, leather patch and white free-hand embroidery on both back pockets' },
+      { src: '/images/pant-14-pocket.webp', w: 2000, h: 800, caption: 'Copper topstitching · freehand loops', alt: 'Close-up of a back pocket: copper topstitching and a white free-hand embroidered line of loops' },
     ],
   },
   { no: '15', label: 'Pant', date: '19.02.26', credit: 'Dublon' },

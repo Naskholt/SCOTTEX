@@ -4,7 +4,7 @@ import { pants } from '../data/pants';
 const slides = pants.flatMap((p) =>
   (p.photos ?? []).map((ph) => ({
     ...ph,
-    title: `${p.label} [ ${p.no} ]`,
+    title: ph.caption ?? (p.no === '—' ? p.label : `${p.label} [ ${p.no} ]`),
     meta: [p.date, p.showCredit ? p.credit : null].filter(Boolean).join(' · '),
   })),
 );

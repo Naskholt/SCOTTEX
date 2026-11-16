@@ -1,19 +1,19 @@
 ---
 // Overview with visuals: pick a step, the photo changes. Steps advance on their own while in view
-// (see "Process stepper" in src/scripts/motion.ts). Photos are from Benjamin's current site.
+// (see "Process stepper" in src/scripts/motion.ts).
 const steps = [
   { t: 'Talk', d: 'You come by the studio. We talk fit and feel, I take your measurements and build a 3D avatar of your body.',
     img: '/images/process-studio.webp', w: 720, h: 1280, alt: 'The studio: a Kansai sewing machine with thread, tools and fabric around it' },
   { t: 'Pattern', d: 'I draft the pattern from your body, not from a size chart.',
-    img: '/images/process-pattern.webp', w: 1000, h: 750, alt: 'Benjamin laying out cut pattern pieces on the cutting table' },
+    img: '/images/step-pattern.webp', w: 1400, h: 1400, alt: 'Two pairs laid out waist to waist, leather patches and freehand pocket embroidery on both' },
   { t: 'Fabric', d: 'You pick the cloth. Deadstock denim from Japan and Italy.',
-    img: '/images/process-fabric.webp', w: 720, h: 1280, alt: 'Rolls of deadstock denim stacked on the work table' },
+    img: '/images/step-fabric.webp', w: 1050, h: 1400, alt: 'Close-up of black denim: twill weave, white topstitching and freehand embroidery on a back pocket' },
   { t: 'Cut & sew', d: 'I cut and sew everything myself, across 20+ machines.',
-    img: '/images/process-sew.webp', w: 720, h: 1280, alt: 'A finished waistband with topstitching and the stitched Scottex patch' },
+    img: '/images/step-sew.webp', w: 1050, h: 1400, alt: 'Black jeans laid flat: a buttoned flap pocket, white topstitching and embroidery' },
   { t: 'Embroidery', d: 'My freehand line on the back pockets. Never the same twice.',
-    img: '/images/process-embroidery.webp', w: 720, h: 1280, alt: 'Freehand leaf embroidery in white thread on a back pocket' },
+    img: '/images/step-embroidery.webp', w: 1050, h: 1400, alt: 'A back pocket embroidered with a euro sign and a ring of gold stars, leather patch above' },
   { t: 'Fitting', d: 'You try them on in the studio. Repairs on Scottex pieces are free after that.',
-    img: '/images/process-fitting.webp', w: 720, h: 1280, alt: 'A finished pair of jeans laid flat, embroidered pocket in view' },
+    img: '/images/step-fitting.webp', w: 1050, h: 1400, alt: 'A client trying on ecru jeans in the studio, sewing machines and work tables behind' },
 ];
 ---
 <section id="process" class="relative bg-selvedge py-[clamp(96px,12vw,160px)]" aria-labelledby="process-title" data-process>

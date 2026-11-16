@@ -16,7 +16,7 @@ const links = [
     <p class="label text-ash">Custom jeans · {site.address} · {site.hours}</p>
     {links.length > 0 && (
       <ul class="label flex gap-6">
-        {links.map((l) => <li><a class="hover:text-rivet" href={l.href} rel="me">{l.label}</a></li>)}
+        {links.map((l) => <li><a class="font-medium text-white hover:text-rivet" href={l.href} rel="me">{l.label}</a></li>)}
       </ul>
     )}
     <p class="label text-ash">© {year} Scottex</p>

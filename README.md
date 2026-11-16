@@ -15,7 +15,7 @@ npm run build    # production build into dist/
 | What | File |
 | --- | --- |
 | Address, hours, price, Instagram, email | `src/data/site.ts` |
-| Cal.com booking links | `src/data/site.ts` → `booking[].calLink` |
+| Cal.com booking link (one event) | `src/data/site.ts` → `booking.calLink` |
 | Gallery pairs and photos | `src/data/pants.ts` + images in `public/images/` |
 | Story text | `src/components/Story.astro` |
 | Process steps | `src/components/Process.astro` |
@@ -26,7 +26,7 @@ npm run build    # production build into dist/
 
 - [ ] Real photos: Benjamin at the machine, measuring, CLO 3D screen, fabric rolls, needle and thread (replace the "Photo to come" plates)
 - [ ] Photos for the other pairs from the Drive folder (convert HEIC → JPG/WebP)
-- [ ] Cal.com account + three event types, then paste the links into `src/data/site.ts`
+- [ ] Cal.com: one event "Fitting at the studio" with booking questions (what matters, budget) and a 250 DKK Stripe deposit, then paste the link into `booking.calLink` in `src/data/site.ts`
 - [ ] TikTok / email in `src/data/site.ts` (Instagram done)
 - [ ] Logo file: save it as `public/images/logo.svg` or `logo.png` (picked up automatically)
 - [ ] Ask Benjamin which client names may be shown (`showCredit: true`)

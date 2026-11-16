@@ -49,7 +49,11 @@ if (!reduce) {
 
   // Intro: logo, then the text, fade in on load. The nav logo appears once the big one has scrolled away.
   gsap.to('.intro-logo', { opacity: 1, duration: 1.8, ease: 'expo.out', delay: 0.2 });
-  gsap.fromTo('.intro-body > *', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.08, delay: 0.6 });
+  gsap.fromTo('.intro-body > * > *', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 1.3, ease: 'expo.out', stagger: 0.09, delay: 0.6 });
+  // Scroll cue: the stitched thread keeps running down, and fades as you leave the front fold
+  gsap.fromTo('.intro-thread', { scaleY: 0, transformOrigin: 'top' }, { scaleY: 1, duration: 1.4, ease: 'expo.out', delay: 1.2 });
+  gsap.to('.intro-thread line', { strokeDashoffset: -22, duration: 1.1, ease: 'none', repeat: -1 });
+  gsap.to('.intro-thread', { opacity: 0, ease: 'none', scrollTrigger: { trigger: '.intro', start: 'top top', end: '25% top', scrub: true } });
   gsap.set('.nav-mark', { opacity: 0 });
   gsap.to('.nav-mark', { opacity: 1, ease: 'none', scrollTrigger: { trigger: '.intro', start: '30% top', end: '60% top', scrub: true } });
 }
@@ -91,4 +95,11 @@ if (!reduce) {
       root.addEventListener('mouseleave', () => bar?.resume());
     }
   }
+}
+
+// Reduced motion: no fade, but still keep the small nav logo hidden while the big front-fold logo is on screen.
+if (reduce) {
+  const mark = document.querySelector<HTMLElement>('.nav-mark');
+  const big = document.querySelector('.intro-logo');
+  if (mark && big) new IntersectionObserver(([e]) => { mark.style.opacity = e.isIntersecting ? '0' : '1'; }).observe(big);
 }

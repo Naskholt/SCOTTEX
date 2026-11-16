@@ -28,8 +28,10 @@ Rules: Rivet at most once per screen. No gradients except photo scrims. Dark onl
 Fonts are self-hosted via @fontsource (see src/styles/global.css).
 
 ## 4. Components
-- Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right. Always visible; solid Void background after the first scroll.
-- Front fold: from Benjamin's current site. B/W thread photo fading to black, stitched logo at ~22% height, one serif line, a Bone 'Book a fitting' button.
+- Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right, all Bone. Always visible, always transparent (no background).
+- Front fold copy is Benjamin's own ("Cut for your body. Sewn by hand in Nørrebro."), never the other group's wording.
+- Book: ONE booking button. Three steps: find a time → booking questions (what matters, budget, name, email) → 250 kr refundable deposit. All in one Cal.com event.
+- Front fold: B/W sewing machine photo (public/images/hero.webp) fading to black, stitched logo centred at ~24% height. Split base: Garamond italic line bottom-left with a mono label above, .btn-rivet 'Book a fitting [ → ]' bottom-right, dashed thread running down the centre as scroll cue. Not centred-form style.
 - Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
 - Buttons (.btn): 1px Bone outline, no radius, Plex Mono uppercase, 48px tall. .btn-rivet for booking.
 - Chapter marker: "01 — STORY" in Plex Mono, Ash, top-left of each section.
@@ -48,7 +50,7 @@ Flat. No shadows. Depth from photography, grain and slow parallax (max ~8%).
 Do: real photos of Benjamin, the machines, fabric, hands, embroidery. Short sentences.
 Do: one motion idea per section, slow easing (expo.out / power2), 0.8–1.4s.
 Don't: stock photos, icons in circles, emoji, rounded cards, glassmorphism, carousels with dots.
-Don't: invent facts about Benjamin. Don't show prices on the site (Benjamin's choice). Never hide the booking path.
+Don't: invent facts about Benjamin. Don't show the price of the jeans (Benjamin's choice); the 250 kr refundable booking deposit is shown in Book. Never hide the booking path.
 
 ## 8. Responsive
 Breakpoints 390 / 768 / 1024 / 1440. No pinning on phones (Process stacks). Touch targets ≥ 44px.
@@ -57,3 +59,7 @@ Reduced motion: no Lenis, no pinning, no parallax, content visible immediately.
 ## 9. Agent prompt guide
 bg #0B0B0A, text #E8E3D8, muted #8C877D, accent #B4733A (once per screen).
 Archivo Expanded (display), EB Garamond (body), IBM Plex Mono (labels). When unsure, remove something.
+
+
+## 10. Photos
+Only Benjamin's own photos. Never use images from scottex.netlify.app (another student group's prototype), except process-studio.webp (the Kansai machine), which is cleared.
