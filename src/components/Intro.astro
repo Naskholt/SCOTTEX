@@ -1,42 +1,49 @@
 ---
+// Front fold, taken from Benjamin's current site (scottex.netlify.app):
+// thread photo fading to black, the stitched logo, one line, one button.
+import Logo from './Logo.astro';
 import { site } from '../data/site';
 ---
-<section id="intro" class="intro relative" aria-label="Scottex">
-  <div class="intro-pin relative h-svh overflow-hidden">
-    <!-- Hero image (Rick Owens: one full-bleed photograph) -->
-    <figure class="intro-media absolute inset-0 m-0">
-      <img
-        src="/images/pant-14-back.webp"
-        alt="A pair of raw indigo Scottex jeans from the back, white free-hand embroidery on both back pockets"
-        width="2000" height="2000"
-        class="h-full w-full object-cover object-[50%_35%] grayscale-[0.35] brightness-[0.62] contrast-[1.1]"
-        fetchpriority="high"
-      />
-      <div class="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-void/40"></div>
-    </figure>
-    <!-- Black curtain with the wordmark (Tomas Than) -->
-    <div class="intro-curtain absolute inset-0 place-items-center bg-void" aria-hidden="true">
-      <p class="intro-mark display text-center text-[clamp(44px,11vw,180px)] leading-none">Scottex</p>
-    </div>
-    <div class="intro-copy wrap absolute inset-x-0 bottom-10 flex flex-col gap-6 md:bottom-14 md:flex-row md:items-end md:justify-between">
-      <h1 class="max-w-[22ch] font-serif text-[clamp(26px,3.4vw,44px)] italic leading-[1.1]">
-        <span class="sr-only">Scottex. </span>Custom jeans, made by hand in Nørrebro.
-      </h1>
-      <ul class="label flex gap-6 text-ash md:flex-col md:items-end md:gap-1">
-        <li><a class="hover:text-bone" href="#story">Story</a></li>
-        <li><a class="hover:text-bone" href="#work">Work</a></li>
-        <li><a class="hover:text-bone" href="#book">Book</a></li>
-      </ul>
-    </div>
-    <div aria-hidden="true" class="label absolute left-1/2 top-[calc(50%+clamp(44px,11vw,180px)*0.8)] -translate-x-1/2 text-ash intro-hint">
-      Since {site.since} · Scroll
-    </div>
+<section id="intro" class="intro relative isolate flex h-svh min-h-[600px] flex-col items-center overflow-hidden bg-black" aria-label="Scottex">
+  <div class="intro-bg absolute inset-0 -z-10" aria-hidden="true">
+    <img src="/images/hero-threads.webp" alt="" width="720" height="1280" fetchpriority="high"
+      class="h-full w-full object-cover object-[50%_30%] grayscale" />
+    <div class="intro-scrim absolute inset-0"></div>
+  </div>
+
+  <div class="intro-logo absolute left-1/2 top-[22%] -translate-x-1/2 -translate-y-1/2">
+    <Logo text="clamp(36px,8vw,64px)" img="clamp(96px,11vw,130px)" eager />
+  </div>
+
+  <div class="intro-body mt-auto flex w-full max-w-[432px] flex-col items-center gap-4 px-4 pb-[clamp(56px,10svh,96px)] text-center">
+    <p class="label text-bone/85">Scottex · Nørrebrogade</p>
+    <h1 class="text-balance font-serif text-[clamp(28px,3vw,36px)] leading-[1.15]">Jeans designed with you, not for you.</h1>
+    {site.newsletter ? (
+      <>
+        <p class="text-[15px] leading-relaxed text-bone/75">Be the first to hear when new fabrics arrive and fittings open in the studio.</p>
+        <form class="mt-2 w-full text-left" action={site.newsletter} method="post">
+          <label for="intro-email" class="label text-bone/85">Sign up for news</label>
+          <div class="mt-2 flex h-12 gap-1">
+            <input id="intro-email" name="email" type="email" required autocomplete="email" placeholder="your@email.com"
+              class="min-w-0 flex-1 border border-bone/40 bg-transparent px-4 text-[15px] placeholder:text-ash focus:border-bone focus:outline-none" />
+            <button type="submit" class="grid w-12 place-items-center border border-bone/40 hover:border-bone" aria-label="Sign up">→</button>
+          </div>
+        </form>
+        <p class="label text-ash" aria-hidden="true">or</p>
+      </>
+    ) : null}
+    <a href="#book" class="mt-2 flex h-12 w-full gap-1">
+      <span class="flex flex-1 items-center justify-center bg-bone font-serif text-[16px] text-void">Book a fitting</span>
+      <span class="grid w-12 place-items-center bg-bone text-void" aria-hidden="true">→</span>
+    </a>
   </div>
 </section>
 
 <style>
-  .intro-curtain, .intro-hint { display: none; }
-  :global(.js-motion) .intro-curtain { display: grid; }
-  :global(.js-motion) .intro-hint { display: block; }
-  :global(.js-motion) .intro-copy { opacity: 0; }
+  .intro-scrim {
+    background:
+      linear-gradient(180deg, rgb(0 0 0 / 0.6) 0%, rgb(0 0 0 / 0.05) 12%, rgb(0 0 0 / 0.25) 26%, rgb(0 0 0 / 0.8) 42%, rgb(0 0 0 / 0.96) 58%, #000 100%),
+      linear-gradient(90deg, rgb(0 0 0 / 0.7) 0%, transparent 22%, transparent 78%, rgb(0 0 0 / 0.7) 100%);
+  }
+  :global(.js-motion) .intro-logo, :global(.js-motion) .intro-body > * { opacity: 0; }
 </style>

@@ -5,18 +5,19 @@ export const site = {
   name: 'SCOTTEX',
   maker: 'Benjamin',
   since: 2023,
-  pairsMade: 27,
   hoursPerPair: 18,
   price: '2.500 kr',
   deposit: '250 kr',
-  address: 'Nørrebrogade 235, st.',
+  address: 'Nørrebrogade 237, st.',
   city: '2200 København N',
   entrance: 'Enter through the shop SABOT',
   hours: 'Weekdays 10–17',
   // TODO: fill in real handles / email before launch.
-  instagram: '', // e.g. 'https://www.instagram.com/scottex'
+  instagram: 'https://www.instagram.com/scottex___/',
   tiktok: '',
   email: '',
+  // Newsletter form in the front fold. Paste a form endpoint (e.g. Buttondown, Mailchimp, Formspree) to show it.
+  newsletter: '',
 };
 
 // Cal.com: create the three event types, then paste the links (the part after cal.com/).
@@ -27,7 +28,7 @@ export const booking = [
     title: 'Fitting at the studio',
     length: '60 min',
     where: 'Nørrebro studio',
-    text: 'Come by the studio. We take your measurements, talk fit and style, and look at fabric together.',
+    text: 'Come by the studio. I take your measurements, we talk fit and style, and look at fabric together.',
     calLink: '', // e.g. 'scottex/fitting'
   },
   {
@@ -35,15 +36,15 @@ export const booking = [
     title: 'Consultation call',
     length: '20 min',
     where: 'Phone or video',
-    text: 'Not ready to visit yet? A short call about what you want and how the process works.',
+    text: 'Not ready to visit yet? A short call about what you want and how I work.',
     calLink: '', // e.g. 'scottex/call'
   },
   {
     id: 'reserve',
     title: 'Reserve a pair',
-    length: '250 kr deposit',
+    length: 'Deposit',
     where: 'Fully refundable',
-    text: 'Hold your place in the queue with a refundable 250 kr deposit. We book your fitting right after.',
+    text: 'Hold your place in my queue with a refundable deposit. We book your fitting right after.',
     calLink: '', // e.g. 'scottex/reserve' (Cal.com event with the Stripe app turned on)
     primary: true,
   },

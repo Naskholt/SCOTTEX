@@ -28,7 +28,9 @@ Rules: Rivet at most once per screen. No gradients except photo scrims. Dark onl
 Fonts are self-hosted via @fontsource (see src/styles/global.css).
 
 ## 4. Components
-- Nav: fixed, transparent. MENU left, SCOTTEX centre, BOOK [ → ] right. Hides on scroll down.
+- Nav: fixed, transparent. MENU left, logo centre (fades in after the front fold), BOOK [ → ] right. Hides on scroll down.
+- Front fold: from Benjamin's current site. B/W thread photo fading to black, stitched logo at ~22% height, one serif line, a Bone 'Book a fitting' button.
+- Logo (src/components/Logo.astro): public/images/scottex-logo-white.svg, white line mark. Never redraw it.
 - Buttons (.btn): 1px Bone outline, no radius, Plex Mono uppercase, 48px tall. .btn-rivet for booking.
 - Chapter marker: "01 — STORY" in Plex Mono, Ash, top-left of each section.
 - Plate (src/components/Plate.astro): honest stand-in for a photo not shot yet. Replace, never fake.
@@ -46,7 +48,7 @@ Flat. No shadows. Depth from photography, grain and slow parallax (max ~8%).
 Do: real photos of Benjamin, the machines, fabric, hands, embroidery. Short sentences.
 Do: one motion idea per section, slow easing (expo.out / power2), 0.8–1.4s.
 Don't: stock photos, icons in circles, emoji, rounded cards, glassmorphism, carousels with dots.
-Don't: invent facts about Benjamin. Don't hide the price or the booking path.
+Don't: invent facts about Benjamin. Don't show prices on the site (Benjamin's choice). Never hide the booking path.
 
 ## 8. Responsive
 Breakpoints 390 / 768 / 1024 / 1440. No pinning on phones (Process stacks). Touch targets ≥ 44px.

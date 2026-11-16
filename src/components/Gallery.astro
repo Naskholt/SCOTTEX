@@ -1,60 +1,97 @@
 ---
 import { pants } from '../data/pants';
-const numbered = pants.filter((p) => /^\d+$/.test(p.no));
-const featured = pants.filter((p) => p.photos?.length);
-const title = (p: (typeof pants)[number]) => `${p.label} [ ${p.no} ]`;
+// Swipeable strip of every photo in src/data/pants.ts. Tap a photo to open it full screen.
+const slides = pants.flatMap((p) =>
+  (p.photos ?? []).map((ph) => ({
+    ...ph,
+    title: `${p.label} [ ${p.no} ]`,
+    meta: [p.date, p.showCredit ? p.credit : null].filter(Boolean).join(' · '),
+  })),
+);
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
-<section id="work" class="relative py-[clamp(104px,16vw,220px)]" aria-labelledby="work-title">
-  <div class="wrap">
-    <div class="flex flex-wrap items-end justify-between gap-6">
-      <div>
-        <p class="label mb-10 text-ash">03 — Work</p>
-        <h2 id="work-title" class="display text-[clamp(40px,7vw,112px)]" data-reveal>The archive</h2>
-      </div>
-      <p class="label text-ash" data-reveal>Pant [ {numbered.length} ]</p>
+<section id="work" class="relative py-[clamp(104px,14vw,180px)]" aria-labelledby="work-title">
+  <div class="wrap flex flex-wrap items-end justify-between gap-6">
+    <div>
+      <p class="label mb-10 text-ash">03 — Work</p>
+      <h2 id="work-title" class="display text-[clamp(40px,7vw,112px)]" data-reveal>Work</h2>
     </div>
-
-    <!-- Featured pairs: every pair that has photos. Click to open full screen. -->
-    <ul class="mt-16 grid gap-y-20">
-      {featured.map((p, k) => (
-        <li class="pswp-gallery grid gap-4 md:grid-cols-12 md:gap-6" data-pswp data-reveal>
-          {p.photos!.map((ph, j) => (
-            <a href={ph.src} data-pswp-width={ph.w} data-pswp-height={ph.h}
-              class={`group relative block overflow-hidden ${j === 0 ? (k % 2 ? 'md:col-span-5 md:col-start-8' : 'md:col-span-5') : (k % 2 ? 'md:col-span-6 md:col-start-1 md:row-start-1 md:self-end' : 'md:col-span-6 md:col-start-7 md:self-end')}`}
-              aria-label={`Open photo ${j + 1} of ${title(p)}`}>
-              <img src={ph.src} alt={ph.alt} width={ph.w} height={ph.h} loading="lazy"
-                class={`w-full object-cover brightness-[0.88] transition duration-700 group-hover:scale-[1.02] group-hover:brightness-100 ${j === 0 ? 'aspect-[4/5]' : ''}`} />
-            </a>
-          ))}
-          <div class="flex items-baseline justify-between gap-4 border-t border-bone/15 pt-3 md:col-span-12">
-            <span class="label">{title(p)}</span>
-            <span class="label text-ash">{[p.date, p.showCredit ? p.credit : null].filter(Boolean).join(' · ')}</span>
-          </div>
-        </li>
-      ))}
-    </ul>
-
-    <!-- The full ledger, like a workshop order book. Pairs get a thumbnail once photos are added in src/data/pants.ts -->
-    <div class="mt-[clamp(80px,10vw,140px)]">
-      <p class="label mb-6 text-ash" data-reveal>Order book</p>
-      <ol class="border-t border-bone/15">
-        {pants.map((p) => (
-          <li class="ledger-row grid grid-cols-[5.5rem_1fr_auto] items-center gap-4 border-b border-bone/15 py-4 md:grid-cols-[8rem_1fr_10rem_6rem]" data-reveal>
-            <span class="label text-ash">{p.no === '—' ? 'Special' : `No. ${p.no}`}</span>
-            <span class="display text-[clamp(16px,1.6vw,22px)]">{p.label}</span>
-            <span class="label hidden text-ash md:block">{p.date ?? ''}</span>
-            <span class="label text-right">{p.photos?.length ? <span class="text-rivet">Photos</span> : <span class="text-ash/60">—</span>}</span>
-          </li>
-        ))}
-      </ol>
+    <div class="flex items-center gap-2" data-reveal>
+      <p class="label mr-4 text-ash" aria-live="polite"><span data-gal-now>01</span> / {pad(slides.length)}</p>
+      <button type="button" class="label grid min-h-11 min-w-11 place-items-center border border-bone/30 hover:border-bone" data-gal-prev aria-label="Previous photo">←</button>
+      <button type="button" class="label grid min-h-11 min-w-11 place-items-center border border-bone/30 hover:border-bone" data-gal-next aria-label="Next photo">→</button>
     </div>
   </div>
+
+  <ul class="gal-track mt-12 flex snap-x snap-mandatory gap-4 overflow-x-auto md:gap-6" data-gal data-pswp aria-label="Photos of my work">
+    {slides.map((s, i) => (
+      <li class="w-[82vw] shrink-0 snap-start md:w-[min(44vw,620px)]" data-gal-slide>
+        <a href={s.src} data-pswp-width={s.w} data-pswp-height={s.h} class="group block overflow-hidden"
+          aria-label={`Open photo ${i + 1}: ${s.title}`}>
+          <img src={s.src} alt={s.alt} width={s.w} height={s.h} loading={i < 2 ? 'eager' : 'lazy'} draggable="false"
+            class="aspect-[4/5] w-full object-cover brightness-[0.9] transition duration-700 group-hover:brightness-100" />
+        </a>
+        <div class="mt-3 flex items-baseline justify-between gap-4 border-t border-bone/15 pt-3">
+          <span class="label">{s.title}</span>
+          <span class="label text-ash">{s.meta}</span>
+        </div>
+      </li>
+    ))}
+  </ul>
 </section>
+
+<style>
+  .gal-track {
+    padding-inline: max(16px, 6vw);
+    scroll-padding-inline: max(16px, 6vw);
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+  }
+  .gal-track::-webkit-scrollbar { display: none; }
+</style>
+
 <script>
   import PhotoSwipeLightbox from 'photoswipe/lightbox';
   import 'photoswipe/style.css';
-  document.querySelectorAll<HTMLElement>('[data-pswp]').forEach((el) => {
-    const lb = new PhotoSwipeLightbox({ gallery: el, children: 'a', pswpModule: () => import('photoswipe'), bgOpacity: 0.96 });
-    lb.init();
-  });
+
+  const track = document.querySelector<HTMLElement>('[data-gal]');
+  if (track) {
+    new PhotoSwipeLightbox({ gallery: track, children: 'a', pswpModule: () => import('photoswipe'), bgOpacity: 0.96 }).init();
+
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('[data-gal-slide]'));
+    const now = document.querySelector('[data-gal-now]');
+    const prev = document.querySelector<HTMLButtonElement>('[data-gal-prev]');
+    const next = document.querySelector<HTMLButtonElement>('[data-gal-next]');
+    const smooth = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+    const current = () => {
+      const left = track.getBoundingClientRect().left + parseFloat(getComputedStyle(track).paddingLeft);
+      let best = 0, dist = Infinity;
+      slides.forEach((s, i) => {
+        const d = Math.abs(s.getBoundingClientRect().left - left);
+        if (d < dist) { dist = d; best = i; }
+      });
+      return best;
+    };
+    const update = () => {
+      const i = current();
+      if (now) now.textContent = String(i + 1).padStart(2, '0');
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      if (prev) prev.disabled = i === 0;
+      if (next) next.disabled = atEnd;
+    };
+    const go = (dir: number) => {
+      const i = Math.max(0, Math.min(slides.length - 1, current() + dir));
+      track.scrollTo({ left: slides[i].offsetLeft - slides[0].offsetLeft, behavior: smooth });
+    };
+    prev?.addEventListener('click', () => go(-1));
+    next?.addEventListener('click', () => go(1));
+    track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
 </script>
+
+<style is:global>
+  [data-gal-prev]:disabled, [data-gal-next]:disabled { opacity: 0.3; cursor: default; border-color: rgb(232 227 216 / 0.3); }
+</style>

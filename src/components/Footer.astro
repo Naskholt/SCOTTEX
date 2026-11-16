@@ -1,5 +1,6 @@
 ---
 import { site } from '../data/site';
+import Logo from './Logo.astro';
 const year = new Date().getFullYear();
 const links = [
   site.instagram && { href: site.instagram, label: 'Instagram' },
@@ -9,7 +10,7 @@ const links = [
 ---
 <footer class="relative grid min-h-svh grid-rows-[1fr_auto] bg-void pt-24">
   <div class="wrap grid place-items-center">
-    <p class="display text-center text-[clamp(44px,12.5vw,220px)] leading-none text-bone/90">Scottex</p>
+    <Logo class="mx-auto text-center text-bone/90" text="clamp(44px,12.5vw,220px)" img="clamp(160px,34vw,460px)" />
   </div>
   <div class="wrap flex flex-col gap-6 border-t border-bone/15 py-8 md:flex-row md:items-center md:justify-between">
     <p class="label text-ash">Custom jeans · {site.address} · {site.hours}</p>

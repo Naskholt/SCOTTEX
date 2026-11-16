@@ -47,51 +47,9 @@ if (!reduce) {
     });
   });
 
-  const mm = gsap.matchMedia();
-
-  // Intro: wordmark on black, then the curtain lifts onto the hero photo
-  mm.add('(min-width: 0px)', () => {
-    const tl = gsap.timeline({
-      scrollTrigger: { trigger: '.intro', start: 'top top', end: '+=120%', scrub: 0.8, pin: '.intro-pin' },
-    });
-    tl.to('.intro-hint', { opacity: 0, duration: 0.2 }, 0)
-      .to('.intro-mark', { scale: 0.35, opacity: 0, duration: 1, ease: 'power2.in' }, 0)
-      .to('.intro-curtain', { clipPath: 'inset(0 0 100% 0)', duration: 1, ease: 'power2.inOut' }, 0.25)
-      .fromTo('.intro-media img', { scale: 1.15 }, { scale: 1, duration: 1.25, ease: 'power2.out' }, 0.25)
-      .fromTo('.intro-copy', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5 }, 0.9);
-    gsap.set('.intro-curtain', { clipPath: 'inset(0 0 0% 0)' });
-    gsap.set('.nav-mark', { opacity: 0 });
-    gsap.to('.nav-mark', { opacity: 1, scrollTrigger: { trigger: '.intro', start: 'top top', end: '+=40%', scrub: true } });
-    // Entrance on load
-    gsap.from('.intro-mark', { opacity: 0, letterSpacing: '0.3em', duration: 1.8, ease: 'expo.out' });
-  });
-
-  // Process: pinned, scrubbed through the steps (desktop only)
-  mm.add('(min-width: 768px)', () => {
-    const steps = gsap.utils.toArray<HTMLElement>('.process-step');
-    const now = document.querySelector('[data-step-now]');
-    gsap.set(steps, { autoAlpha: 0 });
-    gsap.set(steps[0], { autoAlpha: 1 });
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '.process-pin', start: 'top top', end: `+=${steps.length * 90}%`, scrub: 0.6, pin: true,
-        onUpdate: (self) => {
-          const i = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
-          if (now) now.textContent = String(i + 1);
-        },
-      },
-    });
-    tl.to('.process-progress', { scaleX: 1, ease: 'none', duration: steps.length }, 0);
-    steps.forEach((s, i) => {
-      if (i === 0) return;
-      const prev = steps[i - 1];
-      tl.to(prev, { autoAlpha: 0, duration: 0.3 }, i - 0.3)
-        .fromTo(s, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 }, i - 0.15)
-        .fromTo(s.querySelector('.process-media'), { yPercent: 8, clipPath: 'inset(15% 0 15% 0)' }, { yPercent: 0, clipPath: 'inset(0% 0 0% 0)', duration: 0.6, ease: 'power2.out' }, i - 0.15)
-        .fromTo(s.querySelector('.process-text'), { y: 40 }, { y: 0, duration: 0.6, ease: 'power2.out' }, i - 0.1);
-    });
-    return () => gsap.set(steps, { clearProps: 'all' });
-  });
-} else {
-  document.querySelectorAll<HTMLElement>('[data-step-now]').forEach((n) => n.closest('p')?.remove());
+  // Intro: logo, then the text, fade in on load. The nav logo appears once the big one has scrolled away.
+  gsap.to('.intro-logo', { opacity: 1, duration: 1.8, ease: 'expo.out', delay: 0.2 });
+  gsap.fromTo('.intro-body > *', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.2, ease: 'expo.out', stagger: 0.08, delay: 0.6 });
+  gsap.set('.nav-mark', { opacity: 0 });
+  gsap.to('.nav-mark', { opacity: 1, ease: 'none', scrollTrigger: { trigger: '.intro', start: '30% top', end: '60% top', scrub: true } });
 }
