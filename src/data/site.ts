@@ -46,10 +46,10 @@ export const booking = {
 // See tools/booking-test/README.md for the Google Sheet setup.
 export const bookingTest = {
   // Google Apps Script web app URL (ends in /exec). Empty = the test still works but records nothing.
-  sheetUrl: '',
+  sheetUrl: 'https://script.google.com/macros/s/AKfycbxcgDkXvVmYUA4Ayypj5dPHjnFB7yU0teb30xGv7lnCrL9clJGylRLi8EVxoF6U-z1b/exec',
   school: 'EK',
-  // An email people can write to about their data. TODO: fill in before sharing the link.
-  contact: '',
+  // An email people can write to about their data (shown in the privacy note).
+  contact: 'Nicolai.askholt@gmail.com',
   times: ['10:00', '12:00', '14:00', '16:00'],
   matters: ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'],
   budget: ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'],
