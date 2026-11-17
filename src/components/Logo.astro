@@ -6,7 +6,7 @@ import path from 'node:path';
 // `text` = font size of the fallback wordmark, `img` = height of the logo image (it is a wide, tall mark).
 interface Props { class?: string; text: string; img: string; eager?: boolean }
 const { class: cls = '', text, img, eager = false } = Astro.props;
-const file = ['logo.svg', 'scottex-logo-white.svg', 'logo.png', 'logo.webp'].find((f) =>
+const file = ['logo.svg', 'logo.png', 'logo.webp'].find((f) =>
   fs.existsSync(path.join(process.cwd(), 'public/images', f)),
 );
 ---
