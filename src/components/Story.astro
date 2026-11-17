@@ -31,6 +31,28 @@ import Stitch from './Stitch.astro';
         </p>
       </div>
     </div>
+
+    <!-- CLO 3D: the avatar built from the client's measurements, with the pair drafted on it. -->
+    <div class="mt-[clamp(64px,9vw,136px)] grid gap-y-8 md:grid-cols-12 md:gap-x-6">
+      <div class="flex flex-col gap-6 md:col-span-5">
+        <p class="label flex items-center gap-3 text-ash" data-reveal>
+          <span class="inline-block w-8 border-t border-ash" aria-hidden="true"></span>
+          Measured · drafted in 3D
+        </p>
+        <p data-reveal>
+          Before I cut any cloth, I take your measurements and build an avatar of your body in CLO 3D. I draft the pattern on that avatar and render the pair on it, so I can check the fit from every side before the denim goes on the table.
+        </p>
+      </div>
+    </div>
+    <figure class="mt-10" data-reveal>
+      <!-- Wide strip: full width on desktop, swipe sideways on phones. -->
+      <div class="overflow-x-auto md:overflow-visible" tabindex="0" aria-label="CLO 3D render, scroll sideways to see all views">
+        <img src="/images/clo-avatar.webp" width="2880" height="510" loading="lazy"
+          alt="A 3D render in CLO 3D: an avatar built from measurements wearing a wide pair of jeans, seen from the front, back, side and three-quarter back"
+          class="h-[260px] w-auto max-w-none md:h-auto md:w-full" />
+      </div>
+      <figcaption class="label mt-4 text-ash">CLO 3D · avatar from measurements · front, back, side<span class="md:hidden"> · swipe →</span></figcaption>
+    </figure>
   </div>
 </section>
 
