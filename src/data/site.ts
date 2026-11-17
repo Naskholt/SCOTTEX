@@ -26,7 +26,7 @@ export const site = {
 // It hides itself after `until` (end of that day). Set `on: false` to remove it now.
 // TODO: confirm with Benjamin: 10% off what exactly, and the last day.
 export const offer = {
-  on: true,
+  on: false,
   text: 'Christmas · 10% off every pair',
   short: 'Christmas · 10% off', // phones
   until: '2026-12-23',

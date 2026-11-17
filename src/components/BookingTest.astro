@@ -151,6 +151,11 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
             This booking page is a test by students from {T.school}, made together with Scottex.
             We want to find out if people would book a fitting with a deposit. Your click tells us you would.
           </p>
+          {site.instagram && (
+            <p class="mt-6 text-bone">
+              Want to book a real fitting? Write to Benjamin on Instagram,{' '}<a class="whitespace-nowrap text-white underline underline-offset-4 hover:text-rivet" href={site.instagram} target="_blank" rel="noopener">@{site.instagram.replace(/\/$/, '').split('/').pop()}</a>.
+            </p>
+          )}
           <p class="label mt-10 text-ash">Can we keep your answer?</p>
           <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8" data-bt-choice>
             <button type="button" class="btn btn-rivet w-full justify-between sm:w-[260px]" data-bt-keep>Keep my answer <span aria-hidden="true">[ → ]</span></button>
@@ -158,7 +163,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
           </div>
           <p class="mt-6 hidden text-bone/85" aria-live="polite" data-bt-choice-done></p>
           <div class="mt-12 flex flex-col gap-4 border-t border-bone/15 pt-8">
-            {site.instagram && <a class="label text-white hover:text-rivet" href={site.instagram} target="_blank" rel="noopener">Want a real fitting? Write to Benjamin on Instagram [ → ]</a>}
+            {site.instagram && <a class="label text-white hover:text-rivet" href={site.instagram} target="_blank" rel="noopener">Book a real fitting on Instagram [ → ]</a>}
             <button type="button" class="label min-h-11 text-left text-ash hover:text-white" data-bt-close>Back to the site</button>
           </div>
           <details class="bt-privacy mt-8">
@@ -455,5 +460,11 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     $('[data-bt-reason-done]').classList.remove('hidden');
   });
 
-  record('view');
+  // A visit only counts once the visitor scrolls, taps, clicks or types. Screenshot bots that load
+  // the page after every deploy and leave without touching it are never counted.
+  {
+    const evs = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
+    const once = () => { evs.forEach((e) => removeEventListener(e, once, true)); record('view'); };
+    evs.forEach((e) => addEventListener(e, once, { capture: true, passive: true }));
+  }
 </script>
