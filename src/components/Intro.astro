@@ -3,7 +3,7 @@
 // Benjamin's line in Garamond italic on the left with the booking button under it, the newsletter sign-up bottom right,
 // a stitched thread as scroll cue.
 import Logo from './Logo.astro';
-import { site, bookingTest } from '../data/site';
+import { site, bookingTest, offer, offerActive } from '../data/site';
 ---
 <section id="intro" class="intro relative isolate flex h-svh min-h-[620px] flex-col overflow-hidden bg-void" aria-label="Scottex">
   <div class="intro-bg absolute inset-0 -z-10" aria-hidden="true">
@@ -29,7 +29,10 @@ import { site, bookingTest } from '../data/site';
       <a href="#book" data-book-start class="btn btn-rivet mt-4 w-full justify-between md:mt-6 md:w-[340px]">
         Start your pair <span aria-hidden="true">[ → ]</span>
       </a>
-      <p class="label text-ash">{site.address.replace(', st.', '')} · since {site.since}</p>
+      {offerActive && (
+        <p class="label text-rivet" data-offer-until={offer.until}>{offer.text} · until {offer.untilLabel}</p>
+      )}
+      <p class="label text-ash" data-offer-fallback hidden={offerActive}>{site.address.replace(', st.', '')} · since {site.since}</p>
     </div>
 
     <!-- Newsletter. With site.newsletter set, the form posts there; otherwise the email goes to the booking-test Google Sheet. -->

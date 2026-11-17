@@ -53,5 +53,14 @@ const ld = {
     <script>
       import '../scripts/motion';
     </script>
+    <script is:inline>
+      // Christmas offer (src/data/site.ts → offer): remove it after its last day, even without a new deploy.
+      (function () {
+        var el = document.querySelector('[data-offer-until]');
+        if (!el || new Date() <= new Date(el.getAttribute('data-offer-until') + 'T23:59:59')) return;
+        document.querySelectorAll('[data-offer-until]').forEach(function (e) { e.remove(); });
+        document.querySelectorAll('[data-offer-fallback]').forEach(function (e) { e.hidden = false; });
+      })();
+    </script>
   </body>
 </html>

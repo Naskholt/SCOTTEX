@@ -47,7 +47,7 @@ One row per event in the **Events** tab:
 | `view` | someone opens the site |
 | `open` | they press "Start your pair" |
 | `time_picked` | they picked a day and time and pressed Next |
-| `details_done` | they answered the two questions and pressed Next (answers only, no name/email) |
+| `details_done` | they answered and pressed Next: what they’d like made (`pieces`), what they wrote (`note`), what matters, budget. No name/email |
 | `pay_click` | they pressed "Pay 250 kr deposit" ← the key number |
 | `keep` | they chose "Keep my answer" — the **only** row with name and email |
 | `declined` | they chose "Delete my details" (no name/email was ever sent) |

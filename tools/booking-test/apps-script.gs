@@ -20,12 +20,15 @@ const SITE = 'https://scottex-ek.netlify.app/';
 
 // A received · B event · C visitor · D step · E day · F time · G matters · H budget · I reason
 // J name · K email · L utm_source · M utm_medium · N utm_campaign · O referrer · P device
+// Q pieces (what they'd like made) · R note (what they wrote about it)
 const COLUMNS = [
   'received', 'event', 'visitor', 'step', 'day', 'time', 'matters', 'budget', 'reason',
   'name', 'email', 'utm_source', 'utm_medium', 'utm_campaign', 'referrer', 'device',
+  'pieces', 'note',
 ];
 
 // Answer options. Keep in sync with bookingTest in src/data/site.ts.
+const PIECES = ['Jeans', 'Jorts', 'Jacket', 'Accessories', 'Something else'];
 const MATTERS = ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'];
 const BUDGETS = ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'];
 const EXIT_REASONS = ['Just looking around', 'The deposit', 'Not the right time', "I'd rather just drop by", 'Something else'];
@@ -66,6 +69,19 @@ function doPost(e) {
 // Opening the /exec URL in a browser shows this, so you can check the deployment works.
 function doGet() {
   return ContentService.createTextOutput('Scottex booking test is listening.');
+}
+
+// START FRESH: run this once from the editor (select "startFresh" → Run) to delete every recorded row,
+// so all counts go back to 0. The column names in row 1 and all tabs stay. This can't be undone.
+function startFresh() {
+  const sheet = getSheet_();
+  const last = sheet.getLastRow();
+  if (last > 1) {
+    sheet.insertRowAfter(last); // Sheets won't delete every row under a frozen header, so keep one empty row
+    sheet.deleteRows(2, last - 1);
+  }
+  styleEvents_();
+  SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(sheet_(SUMMARY_NAME, 0));
 }
 
 // Run from the editor (select "setup" → Run). Makes and styles every tab. Events rows are kept.
@@ -156,7 +172,8 @@ function buildSummary_() {
   reset_(s);
   s.setTabColor(C.rivet);
   const E = SHEET_NAME + '!';
-  const uniq = (ev) => `=IFERROR(COUNTUNIQUE(FILTER(${E}C2:C, ${E}B2:B="${ev}")), 0)`;
+  // COUNTUNIQUEIFS gives a true 0 when nothing matches (COUNTUNIQUE(FILTER()) would count the "no match" error as 1).
+  const uniq = (ev) => `=COUNTUNIQUEIFS(${E}C2:C, ${E}B2:B, "${ev}")`;
   const count = (ev) => `=COUNTIF(${E}B2:B, "${ev}")`;
   const share = (r, of) => `=IF($C$${of}=0, "", C${r}/$C$${of})`;
 
@@ -233,6 +250,19 @@ function buildSummary_() {
   });
   lines_(s, 35, 2, BUDGETS.length, 3);
 
+  // Left · What they'd like made.
+  section_(s, 41, 2, 3, "What they'd like made · pick any");
+  th_(s, 42, 2, ['Piece', 'People', 'Of those who answered']);
+  PIECES.forEach((p, i) => {
+    const r = 43 + i;
+    s.getRange(r, 2).setValue(p);
+    s.getRange(r, 3).setFormula(`=COUNTIFS(${E}B2:B, "details_done", ${E}Q2:Q, "*${p}*")`);
+    s.getRange(r, 4).setFormula(share(r, DETAILS));
+  });
+  lines_(s, 43, 2, PIECES.length, 3);
+  s.getRange(43, 3, PIECES.length, 2).setHorizontalAlignment('center');
+  s.getRange(43, 4, PIECES.length, 1).setNumberFormat('0%');
+
   // Right · Why they tried to leave ("Before you go" pop-up).
   section_(s, 7, 6, 3, 'Why they tried to leave · "Before you go"');
   th_(s, 8, 6, ['Reason', 'Stayed', 'Left']);
@@ -283,7 +313,7 @@ function buildSummary_() {
   lines_(s, 35, 6, src.length + 1, 3);
 
   // Full width · the link to share for each channel.
-  const L0 = other + 3;
+  const L0 = Math.max(other, 43 + PIECES.length - 1) + 3;
   section_(s, L0, 2, 7, 'Links to share · one per channel');
   th_(s, L0 + 1, 2, ['Channel', 'Link', '', '', '', '', '']);
   s.getRange(L0 + 1, 3, 1, 6).merge();
@@ -297,6 +327,20 @@ function buildSummary_() {
   s.getRange(any, 3, 1, 6).merge().setValue(SITE + '?utm_source=yourword   (one word, no spaces)')
     .setFontFamily('Roboto Mono').setFontSize(10).setFontColor(C.ash);
   lines_(s, L0 + 2, 2, SOURCES.length + 1, 7);
+
+  // Full width · what people wrote in "Tell me what you're looking for".
+  const W0 = any + 3;
+  section_(s, W0, 2, 7, "What they're looking for · in their own words");
+  s.getRange(W0 + 1, 2).setFormula(`=IFERROR(QUERY(${E}A2:R, "select A, Q, H, R where B = 'details_done' and R <> '' order by A desc label A 'When', Q 'Made', H 'Budget', R 'What they wrote'", 0), "Nothing written yet")`);
+  s.getRange(W0 + 1, 2, 1, 7).setBackground(C.band).setFontWeight('bold').setFontSize(10);
+  s.getRange(W0 + 2, 2, 200, 1).setNumberFormat('d mmm, hh:mm');
+  lines_(s, W0 + 2, 2, 30, 7);
+
+  // Counts are plain whole numbers (never shown as %).
+  s.getRange(5, 2, 1, 7).setNumberFormat('0');
+  s.getRange(5, 6).setNumberFormat('0%');
+  s.getRange(9, 3, 40, 1).setNumberFormat('0');
+  s.getRange(9, 7, 40, 2).setNumberFormat('0');
 
   // Numbers: centred; shares as %.
   [[9, 3, 34], [9, 7, 36]].forEach(([r, c, n]) => s.getRange(r, c, n, 2).setHorizontalAlignment('center'));
@@ -312,22 +356,23 @@ function buildPeople_() {
   reset_(s);
   s.setTabColor(C.ink);
   const E = SHEET_NAME + '!';
-  // A margin · B-H would book · I gap · J-K newsletter
-  [[2, 140], [3, 150], [4, 220], [5, 110], [6, 70], [7, 130], [8, 260], [9, 36], [10, 140], [11, 240]]
+  // A margin · B-J would book · K gap · L-M newsletter
+  [[2, 120], [3, 140], [4, 210], [5, 100], [6, 60], [7, 150], [8, 120], [9, 200], [10, 320], [11, 36], [12, 120], [13, 230]]
     .forEach(([c, w]) => s.setColumnWidth(c, w));
-  title_(s, 11, 'SCOTTEX · People', 'Real names and emails. Don\'t share this tab, and delete the sheet when the project ends.');
+  title_(s, 13, 'SCOTTEX · People', 'Real names and emails. Don\'t share this tab, and delete the sheet when the project ends.');
 
-  section_(s, 4, 2, 7, 'Would book · kept their answer');
-  s.getRange(5, 2).setFormula(`=IFERROR(QUERY(${E}A2:P, "select A, J, K, E, F, H, G where B = 'keep' order by A desc label A 'When', J 'Name', K 'Email', E 'Day', F 'Time', H 'Budget', G 'What matters'", 0), "Nobody yet")`);
-  s.getRange(5, 2, 1, 7).setBackground(C.band).setFontWeight('bold').setFontSize(10);
+  section_(s, 4, 2, 9, 'Would book · kept their answer');
+  s.getRange(5, 2).setFormula(`=IFERROR(QUERY(${E}A2:R, "select A, J, K, E, F, Q, H, G, R where B = 'keep' order by A desc label A 'When', J 'Name', K 'Email', E 'Day', F 'Time', Q 'Made', H 'Budget', G 'What matters', R 'What they wrote'", 0), "Nobody yet")`);
+  s.getRange(5, 2, 1, 9).setBackground(C.band).setFontWeight('bold').setFontSize(10);
   s.getRange(6, 2, 300, 1).setNumberFormat('d mmm, hh:mm');
-  lines_(s, 6, 2, 40, 7);
+  s.getRange(6, 10, 300, 1).setWrap(true);
+  lines_(s, 6, 2, 40, 9);
 
-  section_(s, 4, 10, 2, 'Newsletter sign-ups');
-  s.getRange(5, 10).setFormula(`=IFERROR(QUERY(${E}A2:P, "select A, K where B = 'newsletter' order by A desc label A 'When', K 'Email'", 0), "Nobody yet")`);
-  s.getRange(5, 10, 1, 2).setBackground(C.band).setFontWeight('bold').setFontSize(10);
-  s.getRange(6, 10, 300, 1).setNumberFormat('d mmm, hh:mm');
-  lines_(s, 6, 10, 40, 2);
+  section_(s, 4, 12, 2, 'Newsletter sign-ups');
+  s.getRange(5, 12).setFormula(`=IFERROR(QUERY(${E}A2:R, "select A, K where B = 'newsletter' order by A desc label A 'When', K 'Email'", 0), "Nobody yet")`);
+  s.getRange(5, 12, 1, 2).setBackground(C.band).setFontWeight('bold').setFontSize(10);
+  s.getRange(6, 12, 300, 1).setNumberFormat('d mmm, hh:mm');
+  lines_(s, 6, 12, 40, 2);
 }
 
 // ---------------------------------------------------------------- How to use
@@ -364,22 +409,23 @@ function buildGuide_() {
   pairs(15, [
     ['How', 'Events tab → click the first test row number → hold Shift → click the last → right-click → Delete rows.'],
     ['Never delete', 'Row 1 in Events (the column names). The other tabs need it.'],
+    ['Start from 0', 'Extensions → Apps Script → pick "startFresh" → Run. Deletes every row in Events (can\'t be undone).'],
   ]);
   g.getRange(16, 2, 1, 2).setFontColor(C.rivet);
 
-  section_(g, 18, 2, 2, '3 · Reading the results');
-  pairs(19, [
-    ['Summary', 'Updates by itself. Funnel, what matters, budget, why people left, where they came from.'],
+  section_(g, 19, 2, 2, '3 · Reading the results');
+  pairs(20, [
+    ['Summary', 'Updates by itself. Funnel, what matters, budget, what they\'d like made, why people left, where they came from, and what people wrote.'],
     ['Key number', '"Would pay the 250 kr deposit" at the top = people who pressed Pay ÷ people who pressed "Start your pair".'],
     ['People', 'Names and emails of people who would book, and newsletter sign-ups. Personal data: don\'t share it.'],
     ['Events', 'One row per click. The visitor column lets you follow one person through their visit.'],
   ]);
 
-  section_(g, 24, 2, 2, '4 · When the project ends');
-  note(25, 'Delete this sheet. The privacy note on the site promises it.');
+  section_(g, 25, 2, 2, '4 · When the project ends');
+  note(26, 'Delete this sheet. The privacy note on the site promises it.');
 
-  g.getRange(5, 2, 21, 2).setVerticalAlignment('middle');
-  [7, 8, 9, 10, 11, 15, 16, 19, 20, 21, 22].forEach((r) => g.setRowHeight(r, 30));
+  g.getRange(5, 2, 22, 2).setVerticalAlignment('middle');
+  [7, 8, 9, 10, 11, 15, 16, 17, 20, 21, 22, 23].forEach((r) => g.setRowHeight(r, 30));
 }
 
 // ---------------------------------------------------------------- Events (raw data, never cleared)
@@ -394,6 +440,7 @@ function styleEvents_() {
   const keep = Math.max(s.getLastRow() + 1, 2);
   if (s.getMaxRows() > keep) s.deleteRows(keep + 1, s.getMaxRows() - keep);
   if (s.getMaxColumns() > COLUMNS.length) s.deleteColumns(COLUMNS.length + 1, s.getMaxColumns() - COLUMNS.length);
+  if (s.getMaxColumns() < COLUMNS.length) s.insertColumnsAfter(s.getMaxColumns(), COLUMNS.length - s.getMaxColumns());
 
   // Header.
   s.getRange(1, 1, 1, COLUMNS.length).setValues([COLUMNS])
@@ -401,7 +448,7 @@ function styleEvents_() {
   s.setRowHeight(1, 30);
 
   // Shading on every other row, and readable dates. Open-ended ranges, so new rows get it too.
-  const body = s.getRange('A2:P');
+  const body = s.getRange('A2:R');
   s.setConditionalFormatRules([
     SpreadsheetApp.newConditionalFormatRule().whenFormulaSatisfied('=AND($B2<>"", ISEVEN(ROW()))')
       .setBackground(C.band).setRanges([body]).build(),
@@ -409,14 +456,14 @@ function styleEvents_() {
   s.getRange('A2:A').setNumberFormat('d mmm yyyy, hh:mm:ss');
 
   const widths = { received: 160, event: 120, visitor: 140, step: 80, day: 100, time: 60, matters: 220, budget: 120,
-    reason: 180, name: 120, email: 200, utm_source: 100, utm_medium: 100, utm_campaign: 110, referrer: 200, device: 80 };
+    reason: 180, name: 120, email: 200, utm_source: 100, utm_medium: 100, utm_campaign: 110, referrer: 200, device: 80, pieces: 160, note: 320 };
   COLUMNS.forEach((c, i) => s.setColumnWidth(i + 1, widths[c]));
 }
 
 // Plain text only, short, and never starting with = + - @ (so nothing runs as a formula in the sheet).
 function clean_(v) {
   if (v === undefined || v === null) return '';
-  let s = String(v).slice(0, 300);
+  let s = String(v).slice(0, 600);
   if (/^[=+\-@]/.test(s)) s = "'" + s;
   return s;
 }

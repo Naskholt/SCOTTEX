@@ -58,6 +58,21 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
         </div>
         <div class="md:col-span-6 md:col-start-7">
           <fieldset>
+            <legend class="label text-ash">What would you like made? <span class="text-ash/70">· pick any</span></legend>
+            <div class="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {T.pieces.map((p) => (
+                <button type="button" class="bt-pick bt-check label h-12 justify-start px-4" aria-pressed="false" data-bt-piece={p}>
+                  <span class="bt-box" aria-hidden="true"></span>{p}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <label class="mt-10 block">
+            <span class="label text-ash">Tell me what you're looking for <span class="text-ash/70">· optional</span></span>
+            <textarea class="bt-in bt-area" rows="3" maxlength="500" data-bt-note
+              placeholder="E.g. wide raw-denim jeans with embroidery on the back pockets"></textarea>
+          </label>
+          <fieldset class="mt-10">
             <legend class="label text-ash">What matters most to you? <span class="text-ash/70">· pick any</span></legend>
             <div class="mt-3 grid gap-2 sm:grid-cols-2">
               {T.matters.map((m) => (
@@ -68,7 +83,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
             </div>
           </fieldset>
           <fieldset class="mt-10">
-            <legend class="label text-ash">What would you spend on one pair?</legend>
+            <legend class="label text-ash">What would you spend?</legend>
             <div class="mt-3 grid grid-cols-2 gap-2">
               {T.budget.map((b) => <button type="button" class="bt-pick label h-12" aria-pressed="false" data-bt-budget={b}>{b}</button>)}
             </div>
@@ -105,12 +120,13 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
             <div class="bt-row"><dt class="label text-ash">Fitting</dt><dd>{booking.length} in the studio</dd></div>
             <div class="bt-row"><dt class="label text-ash">Where</dt><dd>{where} · {entrance}</dd></div>
             <div class="bt-row"><dt class="label text-ash">When</dt><dd data-bt-sum="when"></dd></div>
+            <div class="bt-row"><dt class="label text-ash">Made</dt><dd data-bt-sum="made"></dd></div>
             <div class="bt-row"><dt class="label text-ash">You</dt><dd data-bt-sum="you"></dd></div>
           </dl>
           <div class="mt-10 flex items-end justify-between border border-rivet/60 p-6">
             <div>
               <p class="label text-ash">Deposit</p>
-              <p class="mt-2 text-bone/85">Fully refundable.</p>
+              <p class="mt-2 text-bone/85">Taken off the final price.<br />Fully refundable.</p>
             </div>
             <p class="display text-[clamp(32px,4vw,48px)]">{site.deposit}</p>
           </div>
@@ -149,7 +165,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
             <summary class="label cursor-pointer text-ash hover:text-white">How we handle your data</summary>
             <div class="mt-4 space-y-3 text-[15px] text-bone/80">
               <p><b>Who:</b> students from {T.school}, testing interest in booking a fitting with Scottex as part of a school project.</p>
-              <p><b>What:</b> anonymous steps (which step was reached, the day and time picked, your two answers, if you came from a shared link, phone or computer). Your name and email only if you press "Keep my answer".</p>
+              <p><b>What:</b> anonymous steps (which step was reached, the day and time picked, your answers (what you'd like made, what you wrote about it, what matters and your budget), if you came from a shared link, phone or computer). Your name and email only if you press "Keep my answer".</p>
               <p><b>Why:</b> only for the project. Not for marketing, and not shared with anyone else.</p>
               <p><b>Where:</b> in a Google Sheet (Google). No cookies, and nothing is stored on your device.</p>
               <p><b>How long:</b> until the project ends, then it is deleted.</p>
@@ -222,6 +238,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     border-bottom: 1px solid rgb(232 227 216 / 0.3); font-size: 18px; color: #fff;
   }
   .bt-in::placeholder { color: var(--color-ash); }
+  .bt-area { height: auto; min-height: 96px; padding: 10px 0; line-height: 1.5; resize: vertical; font-size: 17px; }
   .bt-in:focus { outline: none; border-color: var(--color-bone); }
   .bt-row { display: grid; grid-template-columns: 7rem 1fr; gap: 16px; padding: 16px 0; border-bottom: 1px solid rgb(232 227 216 / 0.15); align-items: baseline; }
   .bt-step { animation: bt-in 700ms var(--ease-out-expo); }
@@ -245,12 +262,12 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
   (window as any).scottexVisitor = visitor; // so the hero's newsletter sign-up shares the same id
   const qs = new URLSearchParams(location.search);
   const LOCAL = /^(localhost|127\.|0\.0\.0\.0|\[::1\]|.*\.local$)/.test(location.hostname);
-  const state = { day: '', dayLabel: '', time: '', matters: [] as string[], budget: '', name: '', email: '', reason: '' };
+  const state = { day: '', dayLabel: '', time: '', pieces: [] as string[], note: '', matters: [] as string[], budget: '', name: '', email: '', reason: '' };
 
   function record(event: string, extra: Record<string, string> = {}) {
     const data = {
       event, visitor,
-      day: state.day, time: state.time, matters: state.matters.join(', '), budget: state.budget,
+      day: state.day, time: state.time, pieces: state.pieces.join(', '), note: state.note, matters: state.matters.join(', '), budget: state.budget,
       utm_source: qs.get('utm_source') || '', utm_medium: qs.get('utm_medium') || '', utm_campaign: qs.get('utm_campaign') || '',
       referrer: document.referrer || '', device: innerWidth < 768 ? 'phone' : 'computer',
       ...extra,
@@ -319,7 +336,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     if (e.key === 'Escape') { if (exitOpen()) stay(); else requestClose(); }
     if (e.key === 'Tab') { // keep focus inside the panel (or the pop-up, when it is open)
       const scope = exitOpen() ? exit : root;
-      const f = Array.from(scope.querySelectorAll<HTMLElement>('button:not([disabled]), input, a[href], summary')).filter((el) => el.offsetParent !== null);
+      const f = Array.from(scope.querySelectorAll<HTMLElement>('button:not([disabled]), input, textarea, a[href], summary')).filter((el) => el.offsetParent !== null);
       if (!f.length) return;
       const first = f[0], last = f[f.length - 1];
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
@@ -341,6 +358,7 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     if (step === 'confirm') {
       $('[data-bt-sum="when"]').textContent = `${state.dayLabel} at ${state.time}`;
       $('[data-bt-sum="you"]').textContent = `${state.name} · ${state.email}`;
+      $('[data-bt-sum="made"]').textContent = state.pieces.join(', ') + (state.note ? ` · "${state.note}"` : '');
     }
   }
   const err = (k: string, msg: string) => { $(`[data-bt-err="${k}"]`).textContent = msg; };
@@ -354,6 +372,8 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     if (to === 'confirm') {
       state.name = $<HTMLInputElement>('[data-bt-name]').value.trim();
       state.email = $<HTMLInputElement>('[data-bt-email]').value.trim();
+      state.note = $<HTMLTextAreaElement>('[data-bt-note]').value.trim();
+      if (!state.pieces.length) return err('about', 'Pick what you would like made.');
       if (!state.matters.length || !state.budget) return err('about', 'Pick what matters to you and a budget.');
       if (!state.name) return err('about', 'Write your name.');
       if (!EMAIL.test(state.email)) return err('about', 'Write a full email, like name@mail.com.');
@@ -395,6 +415,12 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
   single('[data-bt-time]', (v) => { state.time = v; err('time', ''); }, 'data-bt-time');
   single('[data-bt-budget]', (v) => (state.budget = v), 'data-bt-budget');
   single('[data-bt-reason]', (v) => (state.reason = v), 'data-bt-reason');
+  $$('[data-bt-piece]').forEach((b) => b.addEventListener('click', () => {
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on));
+    const v = b.dataset.btPiece!;
+    state.pieces = on ? [...state.pieces, v] : state.pieces.filter((p) => p !== v);
+  }));
   $$('[data-bt-matter]').forEach((b) => b.addEventListener('click', () => {
     const on = b.getAttribute('aria-pressed') !== 'true';
     b.setAttribute('aria-pressed', String(on));

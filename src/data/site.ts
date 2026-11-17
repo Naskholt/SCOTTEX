@@ -22,6 +22,19 @@ export const site = {
   newsletter: '',
 };
 
+// Limited offer, shown as a thin bar at the top and under the hero button.
+// It hides itself after `until` (end of that day). Set `on: false` to remove it now.
+// TODO: confirm with Benjamin: 10% off what exactly, and the last day.
+export const offer = {
+  on: true,
+  text: 'Christmas · 10% off every pair',
+  short: 'Christmas · 10% off', // phones
+  until: '2026-12-23',
+  untilLabel: '23 December',
+  untilShort: '23 Dec',
+};
+export const offerActive = offer.on && new Date() <= new Date(offer.until + 'T23:59:59');
+
 // Booking: ONE Cal.com event, "Fitting at the studio". The visitor:
 //   1. finds a date and time
 //   2. answers the booking questions (set these in Cal.com → the event → Advanced → Booking questions):
@@ -38,7 +51,7 @@ export const booking = {
   steps: [
     { t: 'Find a time', d: 'Pick a day and a time that suits you.' },
     { t: 'Tell me about you', d: 'What matters to you in a pair of jeans, your budget, your name and email.' },
-    { t: 'Confirm', d: `A ${site.deposit} deposit holds your time. It is fully refundable.` },
+    { t: 'Confirm', d: `A ${site.deposit} deposit holds your time. It is taken off the final price and fully refundable.` },
   ],
 };
 
@@ -51,6 +64,7 @@ export const bookingTest = {
   // An email people can write to about their data (shown in the privacy note).
   contact: 'Nicolai.askholt@gmail.com',
   times: ['10:00', '12:00', '14:00', '16:00'],
+  pieces: ['Jeans', 'Jorts', 'Jacket', 'Accessories', 'Something else'],
   matters: ['The fit', 'The denim', 'The details', 'That it lasts', 'Made locally', 'The price'],
   budget: ['Under 2.000 kr', '2.000–3.500 kr', '3.500–5.000 kr', 'Over 5.000 kr'],
   // Shown if someone closes the booking before confirming.

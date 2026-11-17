@@ -17,7 +17,7 @@ const fallback = site.instagram || (site.email ? `mailto:${site.email}` : '');
 
     {booking.calLink ? (
       <div class="mt-12 w-full text-left md:mt-16">
-        <p class="label mb-4 text-ash">{booking.length} · {booking.where} · {site.deposit} deposit, fully refundable</p>
+        <p class="label mb-4 text-ash">{booking.length} · {booking.where} · {site.deposit} deposit, taken off the final price · fully refundable</p>
         <!-- Cal.com calendar, embedded inline. The link below is the fallback if the embed can't load. -->
         <div id="cal-inline" class="min-h-[640px] w-full" data-cal-inline={booking.calLink}>
           <noscript>
@@ -37,7 +37,7 @@ const fallback = site.instagram || (site.email ? `mailto:${site.email}` : '');
         ) : (
           <span class="btn w-full max-w-[340px] cursor-default opacity-50" aria-disabled="true">Booking opens soon</span>
         )}
-        <p class="label text-balance text-ash">{booking.length} · {site.deposit} deposit, fully refundable</p>
+        <p class="label text-balance text-ash">{booking.length} · {site.deposit} deposit, taken off the final price · fully refundable</p>
       </div>
     )}
 
