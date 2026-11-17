@@ -261,7 +261,10 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
   const visitor = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
   (window as any).scottexVisitor = visitor; // so the hero's newsletter sign-up shares the same id
   const qs = new URLSearchParams(location.search);
-  const LOCAL = /^(localhost|127\.|0\.0\.0\.0|\[::1\]|.*\.local$)/.test(location.hostname);
+  // Don't record local copies, or automated browsers (Netlify's deploy screenshots, crawlers, audits),
+  // which load the live site right after every deploy.
+  const LOCAL = /^(localhost|127\.|0\.0\.0\.0|\[::1\]|.*\.local$)/.test(location.hostname)
+    || navigator.webdriver || /HeadlessChrome|bot|crawl|spider|Lighthouse|PageSpeed|Prerender/i.test(navigator.userAgent);
   const state = { day: '', dayLabel: '', time: '', pieces: [] as string[], note: '', matters: [] as string[], budget: '', name: '', email: '', reason: '' };
 
   function record(event: string, extra: Record<string, string> = {}) {

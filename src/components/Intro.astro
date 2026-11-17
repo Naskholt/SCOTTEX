@@ -64,7 +64,8 @@ import { site, bookingTest, offer, offerActive } from '../data/site';
       const body = JSON.stringify({ event: 'newsletter', email, visitor: (window as any).scottexVisitor || '', ts: new Date().toISOString(),
         utm_source: new URLSearchParams(location.search).get('utm_source') || '', referrer: document.referrer,
         device: matchMedia('(max-width: 767px)').matches ? 'phone' : 'computer' });
-      const local = /^(localhost|127\.|0\.0\.0\.0|\[::1\]|.*\.local$)/.test(location.hostname); // local copies don't record
+      const local = /^(localhost|127\.|0\.0\.0\.0|\[::1\]|.*\.local$)/.test(location.hostname) // local copies and bots don't record
+        || navigator.webdriver || /HeadlessChrome|bot|crawl|spider|Lighthouse|PageSpeed|Prerender/i.test(navigator.userAgent);
       if (sheet && !local) {
         try { if (!navigator.sendBeacon(sheet, new Blob([body], { type: 'text/plain;charset=utf-8' }))) throw 0; }
         catch { fetch(sheet, { method: 'POST', mode: 'no-cors', body }).catch(() => {}); }
