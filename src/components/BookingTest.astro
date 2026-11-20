@@ -460,11 +460,16 @@ const entrance = site.entrance.charAt(0).toLowerCase() + site.entrance.slice(1);
     $('[data-bt-reason-done]').classList.remove('hidden');
   });
 
-  // A visit only counts once the visitor scrolls, taps, clicks or types. Screenshot bots that load
-  // the page after every deploy and leave without touching it are never counted.
+  // A visit only counts after real input from a person: a touch, the mouse wheel, a click or a key.
+  // Not 'scroll': screenshot bots scroll the page themselves after every deploy. Only trusted
+  // events (made by the user, not by a script) count.
   {
-    const evs = ['scroll', 'wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
-    const once = () => { evs.forEach((e) => removeEventListener(e, once, true)); record('view'); };
+    const evs = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
+    const once = (e: Event) => {
+      if (!e.isTrusted) return;
+      evs.forEach((n) => removeEventListener(n, once, true));
+      record('view');
+    };
     evs.forEach((e) => addEventListener(e, once, { capture: true, passive: true }));
   }
 </script>
