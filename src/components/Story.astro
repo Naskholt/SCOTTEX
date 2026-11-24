@@ -4,7 +4,7 @@ import Stitch from './Stitch.astro';
 ---
 <section id="story" class="relative py-[clamp(56px,7vw,104px)]">
   <div class="wrap">
-    <p class="label mb-10 text-ash" data-reveal>01 — Story</p>
+    <p class="label mb-10 text-ash" data-reveal>01 - Story</p>
     <h2 class="display text-[clamp(40px,7vw,112px)]" data-reveal>One maker.<br />One body.<br />One pair.</h2>
     <div class="mt-[clamp(48px,7vw,104px)] grid gap-y-12 md:grid-cols-12 md:gap-x-6">
       <!-- Cutout of Benjamin between two stitched threads: one loops behind his head, one leaves his fingers. -->
@@ -16,9 +16,8 @@ import Stitch from './Stitch.astro';
         <Stitch class="absolute inset-0 h-full w-full" variant="portrait-front" />
       </figure>
       <div class="flex flex-col gap-6 md:col-span-4 md:col-start-9 md:self-end">
-        <p class="label flex items-center gap-3 text-ash" data-reveal>
-          <span class="inline-block w-8 border-t border-ash" aria-hidden="true"></span>
-          Custom fit · in-house production
+        <p class="label text-ash" data-reveal>
+          Custom fit, in-house production
         </p>
         <p data-reveal>
           I'm {site.maker}. Scottex is my jeans label. Since {site.since} I've cut, sewn and finished every pair myself, in my studio on Nørrebrogade. You come in through the shop SABOT.
@@ -35,9 +34,8 @@ import Stitch from './Stitch.astro';
     <!-- CLO 3D: the avatar built from the client's measurements, with the pair drafted on it. -->
     <div class="mt-[clamp(64px,9vw,136px)] grid gap-y-8 md:grid-cols-12 md:gap-x-6">
       <div class="flex flex-col gap-6 md:col-span-5">
-        <p class="label flex items-center gap-3 text-ash" data-reveal>
-          <span class="inline-block w-8 border-t border-ash" aria-hidden="true"></span>
-          Measured · drafted in 3D
+        <p class="label text-ash" data-reveal>
+          Measured and drafted in 3D
         </p>
         <p data-reveal>
           Before I cut any cloth, I take your measurements and build an avatar of your body in CLO 3D. I draft the pattern on that avatar and render the pair on it, so I can check the fit from every side before the denim goes on the table.
@@ -51,7 +49,7 @@ import Stitch from './Stitch.astro';
           alt="A 3D render in CLO 3D: an avatar built from measurements wearing a wide pair of jeans, seen from the front, back, side and three-quarter back"
           class="h-[260px] w-auto max-w-none md:h-auto md:w-full" />
       </div>
-      <figcaption class="label mt-4 text-ash">CLO 3D · avatar from measurements · front, back, side<span class="md:hidden"> · swipe →</span></figcaption>
+      <figcaption class="label mt-4 text-ash">CLO 3D avatar from measurements, seen from the front, back and side<span class="md:hidden">. Swipe →</span></figcaption>
     </figure>
   </div>
 </section>
