@@ -19,8 +19,8 @@ export const pants: Pant[] = [
     no: '—', label: 'Pant',
     cover: '/images/work-front.webp',
     photos: [
-      { src: '/images/work-front.webp', w: 1500, h: 2000, caption: 'Raw indigo · wide straight leg', alt: 'Raw indigo jeans from the front, wide straight leg, contrast topstitching and a single metal button' },
-      { src: '/images/work-back.webp', w: 1500, h: 2000, caption: 'Leather patch · freehand pocket embroidery', alt: 'The same jeans from the back: leather patch with the stitched Scottex logo and freehand embroidery on both back pockets' },
+      { src: '/images/work-front.webp', w: 1500, h: 2000, caption: 'Raw indigo - wide straight leg', alt: 'Raw indigo jeans from the front, wide straight leg, contrast topstitching and a single metal button' },
+      { src: '/images/work-back.webp', w: 1500, h: 2000, caption: 'Leather patch - freehand pocket embroidery', alt: 'The same jeans from the back: leather patch with the stitched Scottex logo and freehand embroidery on both back pockets' },
     ],
   },
   { no: '01', label: 'Jort', },
@@ -41,13 +41,13 @@ export const pants: Pant[] = [
   {
     no: '—', label: 'Pant',
     photos: [
-      { src: '/images/work-street.webp', w: 1050, h: 1400, caption: 'Wide leg · worn in', alt: 'Wide-leg jeans worn on the street with a belt buckle and brown leather shoes' },
+      { src: '/images/work-street.webp', w: 1050, h: 1400, caption: 'Wide leg - worn in', alt: 'Wide-leg jeans worn on the street with a belt buckle and brown leather shoes' },
     ],
   },
   {
     no: '—', label: 'Pant',
     photos: [
-      { src: '/images/work-worn-back.webp', w: 1050, h: 1400, caption: 'Leather patch · red pocket stitching', alt: 'Raw indigo jeans worn, from the back: leather patch on the waistband and red freehand stitching on the back pockets' },
+      { src: '/images/work-worn-back.webp', w: 1050, h: 1400, caption: 'Leather patch - red pocket stitching', alt: 'Raw indigo jeans worn, from the back: leather patch on the waistband and red freehand stitching on the back pockets' },
     ],
   },
   {
@@ -61,7 +61,7 @@ export const pants: Pant[] = [
   {
     no: '—', label: 'Pant',
     photos: [
-      { src: '/images/work-turnups.webp', w: 1500, h: 2000, caption: 'Selvedge turn-ups · white topstitching', alt: 'Wide dark jeans worn on the street, from the back: white topstitched pocket design and deep turn-ups showing the selvedge' },
+      { src: '/images/work-turnups.webp', w: 1500, h: 2000, caption: 'Selvedge turn-ups - white topstitching', alt: 'Wide dark jeans worn on the street, from the back: white topstitched pocket design and deep turn-ups showing the selvedge' },
     ],
   },
   { no: '15', label: 'Pant', date: '19.02.26', credit: 'Dublon' },

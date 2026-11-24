@@ -30,9 +30,9 @@ import { site, bookingTest, offer, offerActive } from '../data/site';
         Start your pair <span aria-hidden="true">[ → ]</span>
       </a>
       {offerActive && (
-        <p class="label text-rivet" data-offer-until={offer.until}>{offer.text} · until {offer.untilLabel}</p>
+        <p class="label text-rivet" data-offer-until={offer.until}>{offer.text} - until {offer.untilLabel}</p>
       )}
-      <p class="label text-ash" data-offer-fallback hidden={offerActive}>{site.address.replace(', st.', '')} · since {site.since}</p>
+      <p class="label text-ash" data-offer-fallback hidden={offerActive}>{site.address.replace(', st.', '')} - since {site.since}</p>
     </div>
 
     <!-- Newsletter. With site.newsletter set, the form posts there; otherwise the email goes to the booking-test Google Sheet. -->

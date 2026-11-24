@@ -27,8 +27,8 @@ export const site = {
 // TODO: confirm with Benjamin: 10% off what exactly, and the last day.
 export const offer = {
   on: false,
-  text: 'Christmas · 10% off every pair',
-  short: 'Christmas · 10% off', // phones
+  text: 'Christmas - 10% off every pair',
+  short: 'Christmas - 10% off', // phones
   until: '2026-12-23',
   untilLabel: '23 December',
   untilShort: '23 Dec',
