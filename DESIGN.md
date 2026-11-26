@@ -22,7 +22,7 @@ Rules: Rivet at most once per screen. No gradients except photo scrims. Dark onl
 
 ## 3. Typography
 - Display: "Archivo" variable at width 125 (expanded), weight 800 (extra bold), uppercase, letter-spacing -0.01em.
-- Editorial: "EB Garamond", upright (no italic), larger size for pull quotes and Benjamin's own words.
+- Editorial: retired. EB Garamond is no longer used; larger lines (booking headings) are Archivo semibold, -0.01em.
 - Labels / UI: "IBM Plex Mono", 12px, uppercase, letter-spacing 0.12em. Counters like PANT [ 14 ].
 - Body and footer: "Archivo" regular (400, normal width) 18px / 1.6 desktop, 17px phones. Max ~62 characters a line.
 Fonts are self-hosted via @fontsource (see src/styles/global.css).
@@ -59,7 +59,7 @@ Reduced motion: no Lenis, no pinning, no parallax, content visible immediately.
 
 ## 9. Agent prompt guide
 bg #0B0B0A, text #E8E3D8, muted #8C877D, accent #B4733A (once per screen).
-Archivo Expanded (display), Archivo regular (body and footer), EB Garamond (larger editorial lines), IBM Plex Mono (labels). When unsure, remove something.
+Archivo Expanded (display), Archivo regular (body and footer), IBM Plex Mono (labels). When unsure, remove something.
 
 
 ## 10. Photos
